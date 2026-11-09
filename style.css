@@ -458,7 +458,7 @@ body[data-profile="lily"] .sticker-card:nth-child(4n+3){transform:rotate(-1.3deg
 body[data-profile="lily"] .sticker-card:nth-child(5n)::before{content:'';position:absolute;z-index:2;top:-9px;left:43%;width:43px;height:15px;background:#f8d7e7;opacity:.8;transform:rotate(-10deg)}
 body[data-profile="lily"] .sticker-card:hover{transform:translateY(-5px) rotate(0);box-shadow:0 9px 0 #b9dcf1}
 body[data-profile="lily"] .sticker-card:focus-visible{outline:3px solid #6bb5db;outline-offset:4px}
-body[data-profile="lily"] .sticker-card img{width:100%;height:151px;max-width:100%;object-fit:contain;display:block;mix-blend-mode:multiply}
+body[data-profile="lily"] .sticker-card img{width:100%;height:151px;max-width:100%;object-fit:contain;display:block}
 body[data-profile="lily"] .sticker-number{position:absolute;top:8px;left:11px;color:#c6dce9;font:700 10px 'Nunito',sans-serif}
 body[data-profile="lily"] .sticker-caption{margin-top:5px;padding:3px 5px;text-align:center;line-height:1.18;font:600 14px 'Fredoka',sans-serif;color:#6d8fa4}
 body[data-profile="lily"] .winter-postcard{display:flex;align-items:center;position:relative;gap:32px;overflow:hidden;margin:32px 5px 1px;padding:0 31px 0 0;border:2px solid #fff;background:#f9fcff;border-radius:26px;box-shadow:0 4px 0 #cbe3f0}
@@ -797,3 +797,21 @@ body[data-profile="lily"][data-sky="night"] .lily-banner::before{opacity:.18}
  body[data-profile="lily"] .lily-companion.is-talking .companion-bubble{display:block;max-width:132px}
 }
 @media(prefers-reduced-motion:reduce){body[data-profile="lily"][data-sky="night"]::before{animation:none}}
+
+
+/* History accordion: the count and toggle remain visible when rows are hidden. */
+.history-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin-left:auto}
+.history-toggle{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;border:1px solid var(--surface2);border-radius:10px;background:var(--surface0);color:var(--text);font:700 12px var(--body);cursor:pointer;white-space:nowrap;transition:background-color .2s ease}
+.history-toggle:hover{background:var(--surface1)}
+.history-toggle:focus-visible{outline:3px solid var(--lavender);outline-offset:3px}
+.history-toggle svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}
+.history-toggle[aria-expanded="false"] svg{transform:rotate(180deg)}
+.history-content[hidden]{display:none!important}
+body[data-profile="lily"] .history-toggle{background:#f4faff;color:#387ea7;border-color:#bedff1;border-radius:14px;box-shadow:0 2px 0 #d0e8f5}
+body[data-profile="lily"] .history-toggle:hover{background:#e5f5ff}
+body[data-profile="lily"] .winter-postcard>img{object-fit:contain;object-position:center;padding:12px 6px 12px 14px;background:#eaf7ff}
+@media(max-width:480px){
+ .activity .history-heading{flex-wrap:wrap;gap:8px}
+ .activity .history-actions{width:100%;margin-left:0;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){.history-toggle,.history-toggle svg{transition:none}}

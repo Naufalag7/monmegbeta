@@ -21,8 +21,8 @@ const ART = Object.freeze({
   saving:'cheer', empty:'hello',
   'budget-idle':'hello', 'budget-happy':'cheer',
   'budget-warning':'grumpy', 'budget-over':'grumpy',
-  kos:'paper-peek', arisan:'paper-letter', gigi:'paper-happy-face',
-  makan:'paper-ramen', grab:'paper-sweater', makeup:'paper-icecream', listrik:'paper-singing'
+  kos:'cinna-smile', arisan:'cinna-cupid', gigi:'cinna-giggle',
+  makan:'cinna-royal', grab:'cinna-skateboard', makeup:'cinna-shy', listrik:'cinna-colorful'
 });
 const assetFor = key => `assets/stickers/${ART[key] || 'hello'}.webp`;
 const MOODS = Object.freeze({
@@ -43,6 +43,10 @@ let profile = 'lily';
 let month = localDate(today).slice(0,7);
 let query = '';
 let typeFilter = 'all';
+let sortFilter = 'newest';
+const syncUpdated = {lily:null,nopal:null};
+const syncErrors = {lily:'',nopal:''};
+let refreshInFlight = false;
 let loading = true;
 let requestInFlight = false;
 let hasLoaded = { lily: false, nopal: false };
@@ -53,7 +57,8 @@ let selectedMood = MOODS[memoryGet('lily.cinna.mood')] ? memoryGet('lily.cinna.m
 let skyChoice = ['day','night'].includes(memoryGet('lily.cinna.sky')) ? memoryGet('lily.cinna.sky') : 'auto';
 let savingsGoal = Number(memoryGet('lily.cinna.monthlyGoal'));
 if (!Number.isSafeInteger(savingsGoal) || savingsGoal < 1) savingsGoal = 0;
-let pendingConfirmation = null;
+let pendingWrites = (()=>{try {const value=JSON.parse(localStorage.getItem('lily.pending.writes')||'[]');return Array.isArray(value)?value.filter(x=>x&&['lily','nopal'].includes(x.key)&&x.date&&x.type&&Number.isSafeInteger(x.amount)).slice(-20):[];}catch{return [];}})();
+const savePending = ()=>memorySet('lily.pending.writes',JSON.stringify(pendingWrites));
 let companionIdleTimer;
 let companionTapCount = 0;
 let companionTalkTimer;
@@ -132,6 +137,22 @@ function updateSync(label,mode='') {
   $('#sync-label').textContent=label;
   $('#sync-status').className='sync-status '+mode;
   $('.sync-puppy').src=assetFor(mode==='problem'?'budget-warning':mode==='ok'?'budget-happy':'sync');
+  renderSyncDetails();
+}
+function renderSyncDetails(){
+  const key=profile;
+  const last=syncUpdated[key];
+  const pending=pendingWrites.filter(p=>p.key===key);
+  const problem=syncErrors[key];
+  $('#sync-last').textContent=last?`Diambil: ${new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short'}).format(last)}`:'Belum berhasil memuat data';
+  $('#sync-pending').textContent=pending.length?`${pending.length} kiriman belum terkonfirmasi di CSV`:'Tidak ada kiriman tertunda';
+  const detail=problem?`Gagal membaca profil ${key}: ${problem}. Data lama mungkin masih tampil.`:
+    pending.length?'Permintaan terkirim, menunggu kecocokan pada CSV publikasi. Jangan kirim ulang dulu.':
+    last?'Riwayat berasal dari CSV publikasi Google Sheets; perubahan dapat muncul terlambat.':'Sedang mengambil riwayat dari Google Sheets…';
+  $('#sync-detail-text').textContent=detail;
+  $('#sync-detail').classList.toggle('is-problem',Boolean(problem));
+  $('#sync-detail').classList.toggle('is-pending',Boolean(pending.length));
+  $('#pending-review').hidden=!pending.length;
 }
 function notify(message) {
   const toast=$('#toast');
@@ -155,7 +176,8 @@ async function fetchFeed(key) {
   } finally {clearTimeout(timeout);}
 }
 async function refreshData(showFeedback=false) {
-  if(loading && hasLoaded.lily && hasLoaded.nopal)return;
+  if(refreshInFlight)return;
+  refreshInFlight=true;
   loading=true;
   updateSync('Menyegarkan…');
   $('#refresh-btn').disabled=true;
@@ -164,16 +186,23 @@ async function refreshData(showFeedback=false) {
   let errors=0;
   results.forEach((result,index)=>{
     const key=index===0?'lily':'nopal';
-    if(result.status==='fulfilled') {profiles[key]=result.value;hasLoaded[key]=true;}else{errors++;console.warn('Feed gagal:',key,result.reason);}
+    if(result.status==='fulfilled') {
+      profiles[key]=result.value;hasLoaded[key]=true;syncUpdated[key]=new Date();syncErrors[key]='';
+    } else {
+      errors++;
+      const err=result.reason;
+      syncErrors[key]=err?.name==='AbortError'?'Waktu tunggu habis':err?.message||'Koneksi gagal';
+      console.warn('Feed gagal:',key,err);
+    }
   });
-  loading=false;
+  loading=false;refreshInFlight=false;
   $('#refresh-btn').disabled=false;
-  if(!errors)updateSync('Sheets tersambung','ok');
-  else if(errors===1)updateSync('Sebagian data gagal dimuat','problem');
-  else updateSync('Gagal memuat Sheets','problem');
-  if(showFeedback)notify(!errors?'Data terbaru dimuat':'Gagal memuat sebagian data. Coba lagi.');
+  verifyPendingEntries(results);
+  if(!errors)updateSync('Sheets terbaca','ok');
+  else if(errors===1)updateSync('Sebagian gagal dimuat','problem');
+  else updateSync('Sheets tidak tersedia','problem');
+  if(showFeedback)notify(!errors?'Data terbaru berhasil diambil':'Sebagian data tidak dapat dibaca. Lihat status sinkronisasi.');
   render();
-  verifyPendingEntry(results);
 }
 function shiftMonth(n) {
   const [y,m]=month.split('-').map(Number);
@@ -192,58 +221,96 @@ function renderChart(rows) {
   const [y,m]=month.split('-').map(Number);
   const count=new Date(y,m,0).getDate();
   const values=Array(count).fill(0);
-  rows.forEach(r=>{if(r.type==='Pengeluaran')values[Number(r.date.slice(8))-1]+=r.amount;});
-  const max=Math.max(...values,1);
-  const chart=$('#chart');chart.replaceChildren();
+  rows.filter(r=>r.type==='Pengeluaran').forEach(r=>{values[Number(r.date.slice(8))-1]+=r.amount;});
+  const max=Math.max(...values,0), chart=$('#chart');
+  const valid=hasLoaded[profile], hasExpenses=max>0;
+  chart.replaceChildren();
   const todayKey=localDate(new Date());
   for(let i=0;i<count;i++) {
     const column=makeEl('div','chart-col');
-    const bar=makeEl('span',values[i]===max&&values[i]>0?'peak':(month===todayKey.slice(0,7)&&i+1===Number(todayKey.slice(8))?'active':''));
-    bar.style.height=`${Math.max(3,Math.round(values[i]/max*100))}%`;
+    column.dataset.day=String(i+1);column.dataset.amount=String(values[i]);column.dataset.selected='false';
+    const bar=makeEl('span',hasExpenses&&values[i]===max?'peak':(month===todayKey.slice(0,7)&&i+1===Number(todayKey.slice(8))?'active':''));
+    bar.style.height=hasExpenses&&values[i]?`${Math.max(3,Math.round(values[i]/max*100))}%`:'0%';
+    bar.hidden=values[i]===0; // A day with no spending must not look like a tiny expense.
+    column.style.setProperty('--bar-height',bar.style.height);
     bar.style.animationDelay=`${Math.round(i*7)}ms`;
     bar.title=`${i+1} ${months[m-1]}: ${money(values[i])}`;
     column.appendChild(bar);chart.appendChild(column);
   }
-  chart.setAttribute('aria-label',`Pengeluaran per hari untuk ${monthTitle(month)}; tertinggi ${money(Math.max(...values))}`);
-  $('#chart-first').textContent='01';$('#chart-last').textContent=String(count);
+  $('#chart-empty').hidden=valid&&hasExpenses;
+  const empty=$('#chart-empty');
+  empty.querySelector('strong').textContent=!valid?(loading?'Mengambil grafik…':'Grafik belum tersedia'):'Belum ada pengeluaran ☁';
+  empty.querySelector('span').textContent=!valid?(loading?'Menunggu data Google Sheets.':'Muat ulang untuk mencoba kembali.'):'Pengeluaran harian akan terlihat setelah ada transaksi bulan ini.';
+  chart.classList.toggle('no-data',!valid||!hasExpenses);
+  chart.setAttribute('aria-label',!valid?'Grafik belum tersedia':hasExpenses?`Pengeluaran harian ${monthTitle(month)}. Total ${money(values.reduce((a,b)=>a+b,0))}; tertinggi ${money(max)}.`:`Tidak ada pengeluaran untuk ${monthTitle(month)}.`);
+  $('#chart-caption').textContent=!valid?'Menunggu data':hasExpenses?`Hari tertinggi: ${money(max)}`:'Belum ada pengeluaran';
+  $('#chart-first').textContent='01';$('#chart-middle').textContent=String(Math.ceil(count/2)).padStart(2,'0');$('#chart-last').textContent=String(count);
+  $('#chart-selected').textContent=valid?hasExpenses?'Pilih hari pada grafik untuk melihat nominal tepatnya.':'Belum ada pengeluaran harian untuk ditampilkan.':loading?'Grafik sedang dimuat.':'Grafik belum tersedia.';
+}
+function visibleRows(rows=monthRows()) {
+  const matches=rows.filter(r=>(typeFilter==='all'||r.type===typeFilter)&&r.note.toLowerCase().includes(query));
+  return matches.sort((a,b)=>sortFilter==='largest'?b.amount-a.amount||b.date.localeCompare(a.date):sortFilter==='oldest'?a.date.localeCompare(b.date):b.date.localeCompare(a.date));
 }
 function renderHistory(rows) {
   const target=$('#history');target.replaceChildren();target.setAttribute('aria-busy',String(loading&&!hasLoaded[profile]));
-  if(loading&&!hasLoaded[profile]){const e=makeEl('div','blank');e.appendChild(makeEl('img','state-puppy'));e.querySelector('img').src=assetFor('sync');e.querySelector('img').alt='';e.appendChild(makeEl('strong','','Sedang mengambil catatan…'));e.append('Menghubungkan ke Google Sheets.');target.appendChild(e);return;}
-  if(!hasLoaded[profile]){const e=makeEl('div','blank');const img=makeEl('img','state-puppy');img.src=assetFor('budget-warning');img.alt='';e.appendChild(img);e.appendChild(makeEl('strong','','Tidak dapat memuat riwayat'));e.append('Periksa koneksi, kemudian tekan tombol muat ulang.');target.appendChild(e);return;}
-  const displayed=rows.filter(r=>(typeFilter==='all'||r.type===typeFilter)&&r.note.toLowerCase().includes(query));
-  $('#transaction-total').textContent=`${displayed.length} transaksi`;
-  if(!displayed.length) {const e=makeEl('div','blank');const img=makeEl('img','state-puppy');img.src=assetFor('empty');img.alt='';e.appendChild(img);e.appendChild(makeEl('strong','','Tidak ada transaksi'));e.append(rows.length?'Tidak ada hasil sesuai pencarian.':'Belum ada transaksi untuk bulan ini.');target.appendChild(e);return;}
+  const displayed=visibleRows(rows);
+  $('#transaction-total').textContent=hasLoaded[profile]?`${displayed.length} transaksi`:'Memuat…';
+  if(!hasLoaded[profile]){
+    const e=makeEl('div','blank');const img=makeEl('img','state-puppy');img.src=assetFor(loading?'sync':'budget-warning');img.alt='';e.append(img,makeEl('strong','',loading?'Sedang mengambil catatan…':'Riwayat belum tersedia'));
+    e.append(loading?'Menghubungkan ke Google Sheets.':'Periksa koneksi lalu tekan muat ulang.');target.appendChild(e);return;
+  }
+  if(!displayed.length) {
+    const e=makeEl('div','blank');const img=makeEl('img','state-puppy');img.src='assets/stickers/cinna-snooze.webp';img.alt='';
+    e.append(img,makeEl('strong','','Belum ada catatan di sini ☁'));
+    e.append(rows.length?'Coba hapus kata pencarian atau ubah filter.':'Belum ada transaksi untuk bulan ini.');target.appendChild(e);return;
+  }
   let prevDate='';
   for(const r of displayed) {
-    if(r.date!==prevDate) {target.appendChild(makeEl('div','date-head',displayDate(r.date)));prevDate=r.date;}
+    if(r.date!==prevDate){target.appendChild(makeEl('div','date-head',displayDate(r.date)));prevDate=r.date;}
     const record=makeEl('article','record '+(r.type==='Pemasukan'?'record-in':r.type==='Tabungan'?'record-save':''));
     const recordIcon=makeEl('div','record-icon');
-    const code=r.type==='Pemasukan'?'IN':r.type==='Tabungan'?'SAVE':'OUT';
-    recordIcon.appendChild(makeEl('span','record-code',code));
-    const sticker=makeEl('img','lily-only transaction-puppy');
-    sticker.src=assetFor(r.type==='Pemasukan'?'income':r.type==='Tabungan'?'saving':'expense');sticker.alt='';sticker.width=44;sticker.height=36;
+    recordIcon.appendChild(makeEl('span','record-code',r.type==='Pemasukan'?'IN':r.type==='Tabungan'?'SAVE':'OUT'));
+    const sticker=makeEl('img','lily-only transaction-puppy');sticker.src=assetFor(r.type==='Pemasukan'?'income':r.type==='Tabungan'?'saving':'expense');sticker.alt='';sticker.width=44;sticker.height=36;
     recordIcon.appendChild(sticker);record.appendChild(recordIcon);
-    const main=makeEl('div','record-main');
-    main.appendChild(makeEl('strong','',r.note));
-    main.appendChild(makeEl('span','',r.type));
-    record.appendChild(main);
+    const main=makeEl('div','record-main');main.appendChild(makeEl('strong','',r.note));main.appendChild(makeEl('span','',r.type));record.appendChild(main);
     record.appendChild(makeEl('div','record-amount',(r.type==='Pemasukan'?'+ ':'− ')+money(r.amount)));
-    target.appendChild(record);
+    const copy=makeEl('button','record-copy','Salin');copy.type='button';copy.setAttribute('aria-label',`Salin rincian ${r.note}`);copy.title='Salin rincian untuk mencari dan memperbaikinya di Sheet sumber';
+    copy.addEventListener('click',async()=>{const text=`${r.date} | ${r.type} | ${money(r.amount)} | ${r.note}`;try{await navigator.clipboard.writeText(text);notify('Rincian transaksi disalin ♡');}catch{notify('Tidak bisa menyalin otomatis di browser ini.');}});
+    record.appendChild(copy);target.appendChild(record);
   }
 }
 function budgetFor(r) {
   const note=r.note.toLowerCase();
   return BUDGETS.find(b=>b.keywords.some(k=>note.includes(k)))?.id || null;
 }
+function renderCategories(rows) {
+  const target=$('#categories');target.replaceChildren();
+  if(!hasLoaded[profile]){target.appendChild(makeEl('p','category-empty',loading?'Memuat kategori…':'Kategori belum tersedia.'));return;}
+  const expenses=rows.filter(r=>r.type==='Pengeluaran');
+  if(!expenses.length){const blank=makeEl('div','category-empty');const img=makeEl('img');img.src='assets/stickers/cinna-giggle.webp';img.alt='';img.loading='lazy';blank.append(img,makeEl('p','','Belum ada pengeluaran yang perlu dibagi kategori.'));target.appendChild(blank);return;}
+  const totals=Object.fromEntries(BUDGETS.map(b=>[b.id,0]));let other=0;
+  expenses.forEach(r=>{const key=budgetFor(r);if(key)totals[key]+=r.amount;else other+=r.amount;});
+  const total=sum(rows,'Pengeluaran');
+  const cats=[...BUDGETS.map(b=>({name:b.name,value:totals[b.id],img:assetFor(b.id)})),{name:'Lainnya',value:other,img:'assets/stickers/cinna-classic.webp'}].filter(b=>b.value>0).sort((a,b)=>b.value-a.value);
+  cats.forEach(b=>{
+    const item=makeEl('div','category-item');
+    const title=makeEl('div','category-title');const img=makeEl('img');img.src=b.img;img.alt='';img.loading='lazy';img.width=32;img.height=32;
+    title.append(img,makeEl('span','',b.name));
+    const pct=Math.round(b.value/total*100);
+    const value=makeEl('strong','',`${money(b.value)} · ${pct}%`);
+    const track=makeEl('div','category-track');const fill=makeEl('span');fill.style.width=`${b.value/total*100}%`;track.appendChild(fill);
+    item.append(title,value,track);target.appendChild(item);
+  });
+}
 function renderBudgets(rows) {
+  const ready=hasLoaded[profile];
   const totalLimit=BUDGETS.reduce((a,b)=>a+b.limit,0);
   const allocations=Object.fromEntries(BUDGETS.map(b=>[b.id,0]));
   rows.filter(r=>r.type==='Pengeluaran').forEach(r=>{const id=budgetFor(r);if(id)allocations[id]+=r.amount;});
   const used=Object.values(allocations).reduce((a,b)=>a+b,0);
-  $('#budget-used').textContent=money(used);
-  $('#budget-pct').textContent=`${Math.round(used/totalLimit*100)}%`;
-  $('#budget-progress').style.width=`${progressWidth(used,totalLimit)}%`;
+  $('#budget-used').textContent=ready?money(used):'—';
+  $('#budget-pct').textContent=ready?`${Math.round(used/totalLimit*100)}%`:'—';
+  $('#budget-progress').style.width=`${ready?progressWidth(used,totalLimit):0}%`;
   $('.progress').classList.toggle('over',used>totalLimit);
   $('#budget-mood').src=assetFor('budget-'+(used>totalLimit?'over':used>=totalLimit*.8?'warning':used>0?'happy':'idle'));
   const target=$('#budgets');target.replaceChildren();
@@ -258,7 +325,7 @@ function renderBudgets(rows) {
     head.appendChild(title);
     const right=makeEl('span','budget-right');
     const status=makeEl('img','lily-only status-puppy');status.src=assetFor('budget-'+mood);status.alt='';status.title=({idle:'Belum digunakan',happy:'Masih dalam budget',warning:'Mendekati batas',over:'Melebihi batas'})[mood];status.width=34;status.height=29;
-    right.appendChild(makeEl('span','',`${money(allocations[b.id])} / ${money(b.limit)}`));right.appendChild(status);const sr=makeEl('span','sr',status.title);right.appendChild(sr);head.appendChild(right);
+    right.appendChild(makeEl('span','',`${ready?money(allocations[b.id]):'—'} / ${money(b.limit)}`));right.appendChild(status);const sr=makeEl('span','sr',status.title);right.appendChild(sr);head.appendChild(right);
     const track=makeEl('div','budget-line-track');const fill=makeEl('span');fill.style.width=`${progressWidth(allocations[b.id],b.limit)}%`;track.appendChild(fill);
     item.append(head,track);target.appendChild(item);
   });
@@ -266,14 +333,14 @@ function renderBudgets(rows) {
 function renderSavingSky(rows) {
   const saved = sum(rows,'Tabungan');
   const pct = savingsGoal ? Math.min(100,Math.round(saved/savingsGoal*100)) : 0;
-  $('#dream-current').textContent = money(saved);
+  $('#dream-current').textContent = hasLoaded[profile]?money(saved):'—';
   $('#dream-goal').value = savingsGoal || '';
   $('#dream-progress-fill').style.width = pct + '%';
   $('#dream-progress').setAttribute('aria-valuenow',String(pct));
   $('#dream-progress').setAttribute('aria-valuetext',savingsGoal ? `${money(saved)} dari ${money(savingsGoal)}` : 'Belum ada target');
   $('#dream-percent').textContent = savingsGoal ? pct + '%' : '♡';
   const note = $('#dream-status');
-  note.textContent = !savingsGoal ? 'Set a goal to start growing your sky ♡' :
+  note.textContent = !hasLoaded[profile] ? 'Waiting for the real savings data ☁' : !savingsGoal ? 'Set a goal to start growing your sky ♡' :
     saved >= savingsGoal ? 'Your sky is full of stars. Wonderful, Lily! ✦' :
     saved ? `${money(Math.max(0,savingsGoal-saved))} until your next big cloud ♡` :
     `A fresh start! Your little goal is ${money(savingsGoal)}.`;
@@ -329,60 +396,58 @@ function burstAt(element,count=11) {
 function matchingCount(list,p) {
   return list.filter(r=>r.date===p.date && r.type===p.type && r.amount===p.amount && r.note===p.note).length;
 }
-function verifyPendingEntry(results) {
-  if(!pendingConfirmation)return;
-  const p=pendingConfirmation;
-  const index=p.key==='lily'?0:1;
-  if(results[index].status!=='fulfilled'||p.baseline===null)return;
-  if(matchingCount(profiles[p.key],p)>p.baseline) {
-    pendingConfirmation=null;
-    updateSync('Tercatat di riwayat','ok');
-    notify(p.key==='lily'?'Transaksi sudah muncul di Sheets. Cinna ikut senang! ♡':'Transaksi sudah muncul di Sheets.');
-    if(profile==='lily'&&p.key==='lily')burstAt($('#lily-banner-art')||$('.lily-banner-art'),17);
-  }
+function verifyPendingEntries(results) {
+  let verified=0;
+  pendingWrites=pendingWrites.filter(p=>{
+    const result=results[p.key==='lily'?0:1];
+    if(result.status!=='fulfilled'||p.baseline===null)return true;
+    if(matchingCount(profiles[p.key],p)>p.baseline){verified++;return false;}
+    return true;
+  });
+  if(verified){savePending();notify(`${verified} transaksi muncul di CSV Google Sheets ♡`);if(profile==='lily')burstAt($('#companion-button'),9);}
+  renderSyncDetails();
 }
 function render() {
   document.body.dataset.profile=profile;
   document.querySelectorAll('.profile').forEach(btn=>{const active=btn.dataset.profile===profile;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));});
   $('#person-heading').textContent=profile.toUpperCase();
-  // Each profile has its own visual identity; only Lily gets the sky journal.
-  const isLily = profile === 'lily';
-  $('#intro-eyebrow').firstChild.textContent = isLily ? 'CINNAMOROLL SKY JOURNAL / ' : 'BUKU KEUANGAN / ';
-  const hour=new Date().getHours();
-  const greet=hour<11?'Morning':hour<17?'Hello':'Evening';
-  $('#intro-title').innerHTML = isLily ? `${greet}, <em>Lily!</em>` : 'Uang, <em>lebih jelas.</em>';
-  $('#intro-description').textContent = isLily ? ({happy:'A little cloud for every money moment. ♡',cozy:'Soft days deserve a cozy little sky. ♡',bouncy:'Tiny steps, big happy energy! ✦',grumpy:'Even grumpy clouds deserve love. ♡'})[selectedMood] : 'Semua pemasukan dan pengeluaran, tanpa ribet.';
-  $('#brand-description').innerHTML = isLily ? 'Lily’s little<br>sky journal' : 'Lily &amp; Nopal<br>money journal';
-  $('#theme-footer').textContent = isLily ? 'Saku / Lily’s little sky' : 'Saku / Catppuccin Mocha';
-  $('#entry-title').textContent = isLily ? 'Cerita uang Lily' : 'Catat uangmu';
-  $('#submit-entry').dataset.defaultText = isLily ? 'Simpan di Sheets ♡' : 'Kirim ke Sheets';
-  document.querySelector('meta[name="theme-color"]').content = isLily ? (resolvedSky()==='night'?'#263e70':'#d7efff') : '#11111b';
-  $('#app-favicon').href = isLily ? 'assets/stickers/hello.webp' : 'assets/saku-nopal-icon.svg';
-  $('#app-favicon').type = isLily ? 'image/webp' : 'image/svg+xml';
-  $('#month-label').textContent=monthTitle(month);
-  $('#period-code').textContent=month.replace('-',' / ');
-  const rows=monthRows();const income=sum(rows,'Pemasukan');const expenses=sum(rows,'Pengeluaran');const savings=sum(rows,'Tabungan');const net=income-expenses-savings;
-  const all=profiles[profile];const overall=sum(all,'Pemasukan')-sum(all,'Pengeluaran')-sum(all,'Tabungan');
-  $('#total-expenses').textContent=money(expenses);
-  $('#expense-count').textContent=`${rows.filter(r=>r.type==='Pengeluaran').length} transaksi pengeluaran`;
-  $('#monthly-income').textContent=money(income);
-  $('#monthly-savings').textContent=money(savings);
-  $('#monthly-net').textContent=(net<0?'− ':'')+money(Math.abs(net));
-  $('#monthly-net').classList.toggle('negative',net<0);
-  $('#overall-net').textContent=(overall<0?'− ':'')+money(Math.abs(overall));
-  $('#overall-net').classList.toggle('negative',overall<0);
-  renderChart(rows);renderHistory(rows);renderBudgets(rows);renderSavingSky(rows);
+  const isLily=profile==='lily';
+  $('#intro-eyebrow').firstChild.textContent=isLily?'LITTLE MONEY JOURNAL / ':'BUKU KEUANGAN / ';
+  const hour=new Date().getHours();const greet=hour<11?'Morning':hour<17?'Hello':'Evening';
+  $('#intro-title').innerHTML=isLily?`${greet}, <em>Lily! ♡</em>`:'Uang, <em>lebih jelas.</em>';
+  $('#intro-description').textContent=isLily?({happy:'One tiny money moment at a time. ☁',cozy:'Slow days deserve a cozy little sky. ♡',bouncy:'Tiny steps, big happy energy! ✦',grumpy:'Even grumpy clouds deserve love. ♡'})[selectedMood]:'Semua pemasukan dan pengeluaran, tanpa ribet.';
+  $('.brand-world').innerHTML=isLily?'Lily’s <strong>fun world<span class="brand-star">✧</span></strong>':'Nopal’s <strong>money journal</strong>';
+  $('#theme-footer').textContent=isLily?'Lily’s Fun World · little money journal':'Nopal · money journal';
+  $('#entry-title').textContent=isLily?'Cerita uang Lily':'Catat uangmu';
+  $('#submit-entry').dataset.defaultText=isLily?'Simpan di Sheets ♡':'Kirim ke Sheets';
+  document.querySelector('meta[name="theme-color"]').content=isLily?(resolvedSky()==='night'?'#263e70':'#d7efff'):'#11111b';
+  $('#app-favicon').href=isLily?'assets/stickers/hello.webp':'assets/saku-nopal-icon.svg';
+  $('#app-favicon').type=isLily?'image/webp':'image/svg+xml';
+  $('#month-label').textContent=monthTitle(month);$('#period-code').textContent=month.replace('-',' / ');
+  const rows=monthRows();const income=sum(rows,'Pemasukan'),expenses=sum(rows,'Pengeluaran'),savings=sum(rows,'Tabungan'),net=income-expenses-savings;
+  const all=profiles[profile],overall=sum(all,'Pemasukan')-sum(all,'Pengeluaran')-sum(all,'Tabungan');
+  const ready=hasLoaded[profile];
+  $('#total-expenses').textContent=ready?money(expenses):'—';
+  $('#expense-count').textContent=ready?`${rows.filter(r=>r.type==='Pengeluaran').length} transaksi pengeluaran`:(loading?'Memuat data…':'Data belum tersedia');
+  $('#monthly-income').textContent=ready?money(income):'—';
+  $('#monthly-savings').textContent=ready?money(savings):'—';
+  $('#monthly-net').textContent=ready?(net<0?'− ':'')+money(Math.abs(net)):'—';
+  $('#monthly-net').classList.toggle('negative',ready&&net<0);
+  $('#overall-net').textContent=ready?(overall<0?'− ':'')+money(Math.abs(overall)):'—';
+  $('#overall-net').classList.toggle('negative',ready&&overall<0);
+  renderChart(rows);renderHistory(rows);renderBudgets(rows);renderCategories(rows);renderSavingSky(rows);renderSyncDetails();
 }
 function csvCell(v) {let s=String(v??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
 function exportCSV() {
   if(!hasLoaded[profile]) {notify('Data belum dimuat');return;}
-  const rows=monthRows();if(!rows.length){notify('Tidak ada transaksi untuk diunduh');return;}
+  const rows=visibleRows();if(!rows.length){notify('Tidak ada transaksi sesuai filter untuk diunduh');return;}
   const csv='\uFEFF'+[['Tanggal','Jenis','Nominal','Keterangan'],...rows.map(r=>[r.date,r.type,r.amount,r.note])].map(row=>row.map(csvCell).join(',')).join('\r\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const href=URL.createObjectURL(blob);const a=document.createElement('a');a.href=href;a.download=`saku-${profile}-${month}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),3000);notify('CSV diunduh');
 }
 function openDialog() {
   if(requestInFlight)return;
   $('#entry-form').reset();
+  document.querySelectorAll('.idea-chips button').forEach(c=>c.setAttribute('aria-pressed','false'));
   updateFormCinna();
   $('#entry-date').value=localDate(new Date());
   $('#submit-entry').textContent=$('#submit-entry').dataset.defaultText||'Kirim ke Sheets';
@@ -398,18 +463,21 @@ async function submitEntry(event) {
   if(!Number.isSafeInteger(amount)||amount<=0||!['Pengeluaran','Pemasukan','Tabungan'].includes(type)||!parseDate(date)) {notify('Periksa jenis, nominal, dan tanggal');return;}
   requestInFlight=true;$('#submit-entry').disabled=true;$('#submit-entry').textContent='Mengirim…';
   const key=profile;
-  const baseline=hasLoaded[key]?matchingCount(profiles[key],{date,type,amount,note}):null;
+  const identical=pendingWrites.filter(p=>p.key===key&&p.date===date&&p.type===type&&p.amount===amount&&p.note===note).length;
+  const baseline=hasLoaded[key]?matchingCount(profiles[key],{date,type,amount,note})+identical:null;
   const body={user:key==='lily'?'Lily':'Nopal',kat:type,nom:amount,ket:note,customDate:date};
   // Existing backend uses a cross-origin no-cors POST. An opaque response does not prove a write succeeded.
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
   try {
     await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(body),signal:controller.signal});
     $('#entry-dialog').close();
-    pendingConfirmation={key,type,date,amount,note,baseline};
-    updateSync('Terkirim, belum terverifikasi');
+    pendingWrites.push({key,type,date,amount,note,baseline,createdAt:Date.now()});
+    pendingWrites=pendingWrites.slice(-20);savePending();
+    updateSync('Menunggu verifikasi');
     notify('Permintaan dikirim. Periksa Sheets sebelum mengirim ulang.');
     setTimeout(()=>refreshData(false),3000);
     setTimeout(()=>refreshData(false),15000);
+    renderSyncDetails();
   } catch(e) {
     console.warn('POST failed, status unknown:',e);
     notify('Status pengiriman tidak pasti. Periksa Sheet sebelum mencoba lagi.');
@@ -422,7 +490,7 @@ async function submitEntry(event) {
 
 function updateFormCinna() {
   const type=$('#entry-type').value;
-  const image=type==='Pengeluaran'?'paper-ramen':type==='Pemasukan'?'bouncy':'cheer';
+  const image=type==='Pengeluaran'?'cinna-royal':type==='Pemasukan'?'bouncy':'cheer';
   $('.dialog-puppy').src=`assets/stickers/${image}.webp`;
   $('#save-helper').textContent=type==='Tabungan'?'Little savings make big fluffy dreams! ☁':type==='Pemasukan'?'Yay, money coming in! Cinna says hi ♡':'Every little expense has a story. ♡';
 }
@@ -433,11 +501,29 @@ function wakeCompanion() {
   companionIdleTimer=setTimeout(()=>{
     if(profile!=='lily'||document.hidden)return;
     $('#lily-companion').classList.add('is-sleepy');
-    $('#companion-image').src='assets/stickers/paper-nap.webp';
+    $('#companion-image').src='assets/stickers/cinna-blue-hug.webp';
     $('#companion-bubble').textContent='shhh… Cinna is dreaming ☾';
   },55000);
 }
+function setCompanionMenu(open){
+  const menu=$('#companion-menu');
+  const fromMenu=menu.contains(document.activeElement);
+  menu.hidden=!open;
+  if(open)requestAnimationFrame(()=>$('#companion-hug').focus({preventScroll:true}));
+  else if(fromMenu)$('#companion-button').focus({preventScroll:true});
+  $('#companion-button').setAttribute('aria-expanded',String(open));
+  $('#companion-button').setAttribute('aria-label',open?'Tutup menu Cinna':'Buka menu Cinna');
+}
 function setupCinnaCorner() {
+  $('#companion-hug').addEventListener('click',()=>{
+    $('#companion-bubble').textContent='A BIG CLOUD HUG FOR LILY!! ♡';
+    $('#lily-companion').classList.add('is-talking');
+    burstAt($('#companion-button'),16);setCompanionMenu(false);
+    clearTimeout(companionTalkTimer);companionTalkTimer=setTimeout(()=>$('#lily-companion').classList.remove('is-talking'),4800);
+  });
+  $('#companion-letter').addEventListener('click',()=>{setCompanionMenu(false);$('#open-letter').click();});
+  $('#companion-sky').addEventListener('click',()=>{setCompanionMenu(false);$('#sky-toggle').click();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setCompanionMenu(false);});
   setMood(selectedMood);
   applySky();
   document.querySelectorAll('.mood-choice').forEach(btn=>btn.addEventListener('click',()=>{
@@ -471,10 +557,11 @@ function setupCinnaCorner() {
   $('#letter-close').addEventListener('click',()=>letter.close());
   letter.addEventListener('click',event=>{if(event.target===letter)letter.close();});
   $('#entry-type').addEventListener('change',updateFormCinna);
+  $('#entry-note').addEventListener('input',()=>document.querySelectorAll('.idea-chips button').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.note===$('#entry-note').value))));
   document.querySelectorAll('.idea-chips button').forEach(chip=>chip.addEventListener('click',()=>{
     const note=$('#entry-note');
-    if(!note.value.trim())note.value=chip.dataset.note;
-    else if(!note.value.toLowerCase().startsWith(chip.dataset.note.toLowerCase()))note.value=chip.dataset.note+' · '+note.value;
+    note.value=chip.dataset.note;
+    document.querySelectorAll('.idea-chips button').forEach(c=>c.setAttribute('aria-pressed',String(c===chip)));
     note.focus();
     burstAt(chip,6);
   }));
@@ -482,6 +569,7 @@ function setupCinnaCorner() {
   companion.addEventListener('click',()=>{
     companionTapCount++;
     wakeCompanion();
+    setCompanionMenu($('#companion-menu').hidden);
     const lines=['Hii Lily! You’re my favorite cloud ♡','A little hug just for you! ☁','Cinna believes in your tiny steps ✦','Remember to drink some water! ♡','Sending you a sky full of hugs!'];
     $('#companion-bubble').textContent=lines[(companionTapCount-1)%lines.length];
     $('#lily-companion').classList.add('is-talking');
@@ -493,12 +581,13 @@ function setupCinnaCorner() {
     burstAt(companion,12);
   });
   ['pointerdown','keydown'].forEach(name=>document.addEventListener(name,event=>{
+    if(event.type==='pointerdown' && !event.target.closest?.('#lily-companion'))setCompanionMenu(false);
     if(event.target.closest?.('#companion-button'))return;
     if($('#lily-companion').classList.contains('is-sleepy'))wakeCompanion();
     else {clearTimeout(companionIdleTimer);companionIdleTimer=setTimeout(()=>{
       if(profile!=='lily'||document.hidden)return;
       $('#lily-companion').classList.add('is-sleepy');
-      $('#companion-image').src='assets/stickers/paper-nap.webp';
+      $('#companion-image').src='assets/stickers/cinna-blue-hug.webp';
       $('#companion-bubble').textContent='shhh… Cinna is dreaming ☾';
     },55000);}
   },{passive:true}));
@@ -522,9 +611,34 @@ function boot() {
   $('#prev-month').addEventListener('click',()=>shiftMonth(-1));
   $('#next-month').addEventListener('click',()=>shiftMonth(1));
   $('#refresh-btn').addEventListener('click',()=>refreshData(true));
+  $('#pending-review').addEventListener('click',()=>{
+    if(!window.confirm('Sudah periksa riwayat Google Sheets sendiri? Ini hanya menghapus pengingat lokal, bukan mengubah data di Sheet.'))return;
+    pendingWrites=pendingWrites.filter(p=>p.key!==profile);savePending();renderSyncDetails();notify('Pengingat kiriman lokal dibersihkan.');
+  });
   $('#search').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();renderHistory(monthRows());});
   $('#type-filter').addEventListener('change',e=>{typeFilter=e.target.value;renderHistory(monthRows());});
+  $('#sort-filter').addEventListener('change',e=>{sortFilter=e.target.value;renderHistory(monthRows());});
+  // Collapsing the history hides its controls and rows, not the transaction count.
+  const historyContent = $('#history-content');
+  const historyToggle = $('#history-toggle');
+  function setHistoryCollapsed(collapsed) {
+    historyContent.hidden = collapsed;
+    historyToggle.setAttribute('aria-expanded', String(!collapsed));
+    historyToggle.setAttribute('aria-label', collapsed ? 'Tampilkan riwayat transaksi' : 'Sembunyikan riwayat transaksi');
+    $('#history-toggle-label').textContent = collapsed ? 'Tampilkan' : 'Sembunyikan';
+  }
+  setHistoryCollapsed(memoryGet('saku.history.collapsed') === 'true');
+  historyToggle.addEventListener('click', () => {
+    const collapsed = !historyContent.hidden;
+    setHistoryCollapsed(collapsed);
+    memorySet('saku.history.collapsed', collapsed);
+  });
   $('#export-btn').addEventListener('click',exportCSV);
+  const editInfo=$('#edit-info-dialog');
+  $('#edit-help').addEventListener('click',()=>editInfo.showModal());
+  $('#edit-info-close').addEventListener('click',()=>editInfo.close());
+  $('#edit-info-done').addEventListener('click',()=>editInfo.close());
+  editInfo.addEventListener('click',e=>{if(e.target===editInfo)editInfo.close();});
   $('#new-entry-top').addEventListener('click',openDialog);
   $('#new-entry-mobile').addEventListener('click',openDialog);
   $('#close-dialog').addEventListener('click',()=>$('#entry-dialog').close());

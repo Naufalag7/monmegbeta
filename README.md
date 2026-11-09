@@ -1,38 +1,54 @@
-# Saku: Lily's Cinnamoroll sky journal
+# Lily’s Fun World ☁
 
-A Cinnamoroll-filled redesign of the uploaded finance-tracker frontend. It preserves the Lily/Nopal profiles, monthly overview, transaction search and CSV export, budget categories, Google Sheets CSV read, and the existing Apps Script transaction submission.
+A playful, responsive, Cinnamoroll-inspired personal finance journal. This redesign continues the existing *Saku* codebase, **without changing the Google Sheets CSV feeds or Apps Script POST endpoint**.
 
-## What's inside
+## Run
 
-- `index.html`, `style.css`, `script.js`: the ready-to-use website; no build system required.
-- `assets/stickers/`: **all 17 user-provided images**, converted to portable WebP or optimized JPEG with clear filenames. The 12 white-background drawings are showcased on a clickable sticker wall. The four transparent PNGs are used for expressive mood choices and other UI accents. The winter artwork appears in a postcard.
-- `assets/saku-nopal-icon.svg`: a minimal non-character icon for the unchanged Nopal theme.
-- `DESIGN.md`: the intended visual direction, component rationale, and anti-slop liveliness dials.
-- `ANTI-SLOP-REVIEW.md`: the delivery check based on [miqdadbadjuber/anti-slop](https://github.com/miqdadbadjuber/anti-slop).
+Open `index.html` via a static host (GitHub Pages, Netlify, or any HTTPS static server). Keep `style.css`, `redesign.css`, `polish.css`, `script.js`, `experience.js`, `stickers.html`, `stickers.js` and `assets/` together at the root. The links between the journal and sticker world are relative.
 
-## Open the site
+You can preview locally with:
 
-1. Extract the ZIP, preserving all files and the `assets/stickers/` directory.
-2. Open `index.html` in a browser. If your browser blocks local fetches from a `file://` page, serve this directory with a small local web server such as `python -m http.server 8000` and open `http://localhost:8000`.
-3. For the existing GitHub Pages deployment, replace the website's root `index.html`, `style.css`, `script.js` and upload `assets/`. Keep the CSS and asset paths unchanged.
-4. After deployment, test the Lily and Nopal profiles and confirm Google Sheets data appears. Check submissions in the actual Sheet: the existing backend does not provide verifiable write confirmation.
+```sh
+python -m http.server 8000
+# visit http://localhost:8000
+```
 
-**Theme behavior:** All new mood and scrapbook UI is Lily-only. Switching to Nopal retains the original dark money-tracker look. The mood selector changes only the friendly on-page message, not your financial data.
+The site is plain HTML, CSS, and JavaScript—no build step, npm install, or server-side credentials needed. Google Fonts are optional and have system fallbacks.
 
-**Compatibility:** All artwork loads locally; only Google Fonts and the existing finance backend require internet access. CSS and JavaScript remain plain browser-native code.
+## What's new
 
-## Safety, rights, and limitations
+- Four first-screen monthly money cards: income, expenses, savings and remaining cash flow, calculated from Sheet rows.
+- More compact warm greeting, hero and mood controls. No `saku.` logo in the corner.
+- Daily spending chart with real-zero and unavailable-data states; tap or use arrow keys for an exact daily amount.
+- Monthly budget bars plus **category breakdown**, including unmatched spending in *Lainnya*.
+- Separate `stickers.html` gallery; **all 18 provided sticker assets** also appear somewhere in the dashboard experience.
+- Functional inline Cinna mini-menu with hug, letter, sky switch and sticker navigation.
+- Bug fix: tapping note shortcut *replaces* the previous category and marks only one selected chip.
+- Collapsible transaction history, search, type filter, newest/oldest/largest sort, copy details and filtered CSV export.
+- Fixed mobile bottom navigation for summary, history, savings (or Nopal budget), and a dedicated Catat action. Refresh now belongs to the sync banner and no button floats over the footer.
+- Clear feed-read status, last successful fetch time, source error, pending writes; unresolved writes survive a refresh. **Sudah dicek** clears only a *local reminder*, after confirmation—not Sheet records.
+- More readable form sizes and focus rings, accessible dialogs, reduced-motion support and 320px+ responsive layouts.
 
-The pre-existing frontend reads published Google Sheets CSV URLs. Do not put sensitive real finance data on a public page without a secured backend. Its `no-cors` POST cannot verify write success; don't resend without checking Sheets first.
+## Data and backend limitations
 
-Cinnamoroll is a Sanrio character. These user-provided images are bundled for the requested personal customization, not licensed by this project for public or commercial distribution. See Sanrio's published guidance if deploying publicly: https://sanrioinccustomercare.zendesk.com/hc/en-us/articles/1260804384909-Can-I-use-your-characters-on-my-homepage-or-a-custom-item
+The app uses the **original published CSVs** for Lily and Nopal and the **original append-only Apps Script** for sending new transactions. All totals, charts, category allocations and history are computed from the currently downloaded rows. The dashboard intentionally ships with **no demo transactions**. While data is loading or inaccessible, it shows `—` and honest explanatory states, not fabricated zeros.
 
-## Tests performed
+**Existing transactions cannot be edited or deleted by this frontend.** The current integration provides only append, no verified update/delete route or durable Sheet row identifier. To correct older transactions, edit the Google Sheet source directly with a Google account that has access, then press the refresh icon. The *Cara ubah transaksi?* control explains this, while *Salin* helps locate a row. If you later add a proper update API with stable row IDs, it can be integrated without faking edit support.
 
-Ran Chromium-based inline-page render tests using simulated CSV data for viewports **320, 390, 768, and 1440 pixels**. Checked no broken images, no page JavaScript errors, no horizontal scroll overflow, and functional mood, gallery dialog, profile switch, and transaction dialog. Live Google endpoints were not tested. The preview screenshots supplied separately depict synthetic data and should not be taken as real figures.
+**POST results are not proof of success.** Apps Script is called with `mode: 'no-cors'`, which makes the response opaque. New writes are marked as **unconfirmed**, then matched against the published CSV on subsequent refreshes. The publication can lag. Avoid retrying until you've checked the original Sheet. If the sheet cannot be fetched, old cached session data is retained, with a visible error. The displayed timestamp is the browser's last successful **fetch**, not the Sheet's modification time.
 
-## New: interactive Cinna sky (v2)
+Local preferences and pending-write reminders are stored via `localStorage` and are not synced across devices. Monthly savings target is a personal browser preference, not a Sheets transaction.
 
-See `RELEASE-NOTES.md` for the new floating companion, savings cloud, nighttime theme, letter, transaction shortcuts, and animations. The optional star goal is stored in this device's browser; the actual savings amount comes from the selected month's `Tabungan` entries. The previous sticker viewer stays, but there is **no unlockable sticker-diary feature**. All user-supplied artwork remains in `assets/stickers/`.
+## Quality checks
 
-The original published Sheets feeds and `no-cors` Apps Script behavior are retained. Writes are not guaranteed by the POST response. Do not resend without checking Sheets. This is still an unofficial Sanrio fan customization.
+Read `DESIGN.md`, `AUDIT.md` and `DELIVERY-GATE.md` for the design rationale and evidence-based anti-slop checks. `tests/data.test.cjs` contains deterministic tests of CSV parsing, amounts, date handling, row classification and cash-flow math; run with:
+
+```sh
+node --test tests/data.test.cjs
+```
+
+Browser-based checks were run using an isolated page with **synthetic test-only rows**, because the sandbox blocks navigation to localhost and local files. They validate the front-end behavior but **do not verify the live Google Sheets service or real writes**. Test rows are not in the shipped app.
+
+## Licensing note
+
+Cinnamoroll is a character of Sanrio. This is an unofficial personal fan design. Owning a downloaded transparent image is not the same as holding commercial usage rights.
