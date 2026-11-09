@@ -416,9 +416,12 @@ function render() {
   const hour=new Date().getHours();const greet=hour<11?'Morning':hour<17?'Hello':'Evening';
   $('#intro-title').innerHTML=isLily?`${greet}, <em>Lily! ♡</em>`:'Uang, <em>lebih jelas.</em>';
   $('#intro-description').textContent=isLily?({happy:'One tiny money moment at a time. ☁',cozy:'Slow days deserve a cozy little sky. ♡',bouncy:'Tiny steps, big happy energy! ✦',grumpy:'Even grumpy clouds deserve love. ♡'})[selectedMood]:'Semua pemasukan dan pengeluaran, tanpa ribet.';
-  $('.brand-world').innerHTML=isLily?'Lily’s <strong>fun world<span class="brand-star">✧</span></strong>':'Nopal’s <strong>money journal</strong>';
+  $('.brand-wordmark').innerHTML=isLily?'Lily’s<span class="brand-dot">.</span>':'Nopal’s<span class="brand-dot">.</span>';
+  $('.brand-description').innerHTML=isLily?'little sky<br>journal ☁':'money<br>journal';
+  $('.brand').setAttribute('aria-label',isLily?'Lily’s little sky journal':'Nopal’s money journal');
   $('#theme-footer').textContent=isLily?'Lily’s Fun World · little money journal':'Nopal · money journal';
   $('#entry-title').textContent=isLily?'Cerita uang Lily':'Catat uangmu';
+  $('#new-entry-mobile').setAttribute('aria-label',isLily?'Tambah transaksi dengan Cinnamoroll':'Tambah transaksi');
   $('#submit-entry').dataset.defaultText=isLily?'Simpan di Sheets ♡':'Kirim ke Sheets';
   document.querySelector('meta[name="theme-color"]').content=isLily?(resolvedSky()==='night'?'#263e70':'#d7efff'):'#11111b';
   $('#app-favicon').href=isLily?'assets/stickers/hello.webp':'assets/saku-nopal-icon.svg';
@@ -515,6 +518,7 @@ function setCompanionMenu(open){
   $('#companion-button').setAttribute('aria-label',open?'Tutup menu Cinna':'Buka menu Cinna');
 }
 function setupCinnaCorner() {
+  $('#companion-add').addEventListener('click',()=>{setCompanionMenu(false);openDialog();});
   $('#companion-hug').addEventListener('click',()=>{
     $('#companion-bubble').textContent='A BIG CLOUD HUG FOR LILY!! ♡';
     $('#lily-companion').classList.add('is-talking');
@@ -646,5 +650,10 @@ function boot() {
   $('#entry-dialog').addEventListener('click',e=>{if(e.target===$('#entry-dialog'))$('#entry-dialog').close();});
   $('#entry-form').addEventListener('submit',submitEntry);
   render();refreshData();
+  // The sticker world sends people back to the real transaction form, not a fake one.
+  if(new URLSearchParams(location.search).get('catat')==='1') {
+    history.replaceState(null,'',location.pathname+location.hash);
+    openDialog();
+  }
 }
 boot();

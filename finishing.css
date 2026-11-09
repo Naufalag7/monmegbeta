@@ -1,0 +1,381 @@
+/* Lily's Fun World — Cinna action & spacing system, Nov 2026.
+   This final layer intentionally overrides the older overlapping responsive rules.
+   Read DESIGN.md; no data endpoint or financial calculation changes here. */
+:root {
+  --lily-space-xs: 6px;
+  --lily-space-sm: 10px;
+  --lily-space-md: 16px;
+  --lily-space-lg: 22px;
+  --lily-panel-radius: 23px;
+  --lily-control-radius: 13px;
+}
+/* A single card language instead of random pill/squircle mixtures. */
+body[data-profile="lily"] .overview,
+body[data-profile="lily"] .activity,
+body[data-profile="lily"] .budget-section,
+body[data-profile="lily"] .category-section,
+body[data-profile="lily"] .dream-garden,
+body[data-profile="lily"] .sticker-preview,
+body[data-profile="lily"] .mood-board,
+body[data-profile="lily"] .lily-banner {
+  border-radius: var(--lily-panel-radius);
+}
+body[data-profile="lily"] .metric-card,
+body[data-profile="lily"] .record,
+body[data-profile="lily"] .budget-total,
+body[data-profile="lily"] .profile-switch,
+body[data-profile="lily"] .note-panel { border-radius: 16px; }
+body[data-profile="lily"] :is(.action,.history-toggle,.filters input,.filters select,.sky-toggle,.cinna-mail,.profile,.months,.icon-btn) { border-radius:var(--lily-control-radius); }
+body[data-profile="lily"] :is(.activity,.budget-section,.category-section) { box-shadow:0 3px 0 #d5e9f5; }
+body[data-profile="lily"] .overview,
+body[data-profile="lily"] .lily-banner,
+body[data-profile="lily"] .dream-garden,
+body[data-profile="lily"] .sticker-preview { box-shadow:0 3px 0 #d5e9f5; }
+body[data-profile="lily"] .content-grid { gap:var(--lily-space-lg); }
+body[data-profile="lily"] .category-section { margin-top:var(--lily-space-md); }
+body[data-profile="lily"] :is(.activity,.budget-section,.category-section) .section-top { margin-bottom:14px; }
+body[data-profile="lily"] :is(.filters,.budget-list,.category-list) { row-gap:10px; }
+body[data-profile="lily"] .section-footer { gap:10px 14px; }
+body[data-profile="lily"] .lily-banner { margin-bottom:0; }
+body[data-profile="lily"] .lily-banner-copy { padding-block:3px; }
+body[data-profile="lily"] .sky-toolbar { margin-top:10px; margin-bottom:12px; }
+body[data-profile="lily"] .mood-board { margin-top:0;margin-bottom:0; }
+body[data-profile="lily"] .content-grid { padding-top:var(--lily-space-lg); }
+body[data-profile="lily"] .dream-garden,
+body[data-profile="lily"] .sticker-preview { margin-top:var(--lily-space-lg); }
+body[data-profile="lily"] .brand-sticker { object-fit:contain; }
+/* Desktop Catat button is itself a friendly sticker action, with a stable hit area. */
+body[data-profile="lily"] .cinna-desktop-add {
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:6px; min-height:49px; padding:4px 16px 4px 5px;
+  white-space:nowrap;border-radius:16px;box-shadow:0 3px 0 #165b84;
+}
+body[data-profile="lily"] .cinna-desktop-add svg { display:none; }
+body[data-profile="lily"] .cinna-desktop-add .entry-cta-sticker { display:block;width:48px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 0 rgba(255,255,255,.5)); }
+body[data-profile="lily"] .cinna-desktop-add:active { transform:translateY(2px);box-shadow:0 1px 0 #165b84; }
+body[data-profile="nopal"] .cinna-desktop-add .entry-cta-sticker { display:none; }
+/* Companion remains a magic menu; recording is now its first functional choice. */
+body[data-profile="lily"] #companion-add { color:#235e82;background:#e9f6ff;font-weight:900; }
+body[data-profile="lily"] #companion-add:hover { background:#d7eeff; }
+/* A bounded, readable edit sheet on smaller phones. */
+#entry-dialog { max-height:min(92dvh,780px);max-width:min(480px,calc(100vw - 20px)); }
+#entry-dialog .dialog-body { max-height:calc(92dvh - 6px);overflow-y:auto;overscroll-behavior:contain; }
+#entry-dialog .form-field input,#entry-dialog .form-field select { min-height:46px; }
+#entry-dialog .dialog-bottom { gap:10px; }
+#entry-dialog :is(.action,.icon-btn):focus-visible,.mobile-dock :is(a,button):focus-visible { outline:3px solid #a74f88;outline-offset:3px; }
+@media(max-width:990px) {
+ body[data-profile="lily"] .content-grid { gap:16px; }
+ body[data-profile="lily"] .activity,body[data-profile="lily"] .budget-section,body[data-profile="lily"] .category-section { padding:18px; }
+}
+@media(max-width:735px) {
+ /* Inset floating page dock, not a full-width box slicing the document. */
+ body[data-profile="lily"] .mobile-dock,
+ body[data-profile="nopal"] .mobile-dock {
+   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(70px,1.13fr) minmax(0,1fr);
+   align-items:center;column-gap:2px;
+   position:fixed;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));
+   bottom:calc(9px + env(safe-area-inset-bottom));
+   height:72px;min-height:0;padding:6px 6px 6px;
+   border:1px solid #bcdef0;border-radius:23px;
+   background:rgba(250,253,255,.97);box-shadow:0 7px 24px rgba(29,78,113,.18);
+   overflow:visible;isolation:isolate;
+ }
+ .mobile-dock .dock-link { min-height:57px;border-radius:15px;gap:4px;font-size:11px;font-weight:900; }
+ .mobile-dock .dock-link svg { width:23px;height:23px; }
+ body[data-profile="lily"] .mobile-dock .dock-link.active,
+ body[data-profile="lily"] .mobile-dock .dock-link[aria-current="page"] { background:#e5f4fd;color:#22688f; }
+ /* A sticker you tap directly to start an actual new transaction. */
+ body[data-profile="lily"] .mobile-dock .dock-add,
+ body[data-profile="lily"].sticker-page .mobile-dock .dock-add {
+   position:relative!important;align-self:center;
+   display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;
+   min-width:0;width:100%;height:64px;min-height:64px;
+   padding:39px 2px 6px;margin:0 0 0;
+   border:1px solid #a6d4ee;border-radius:20px;
+   background:linear-gradient(180deg,#f4fcff 0%,#d7efff 100%);
+   box-shadow:0 3px 0 #a6d1e8;
+   color:#216289;font:900 11px/1.1 'Nunito',sans-serif;
+   text-decoration:none;transform:translateY(-8px);
+   overflow:visible;touch-action:manipulation;
+ }
+ .mobile-dock .dock-add .cinna-add-art {
+   position:absolute;top:-27px;left:50%;width:80px;height:70px;
+   transform:translateX(-50%);pointer-events:none;
+   display:grid!important;place-items:center;
+   filter:drop-shadow(0 3px 1px rgba(58,117,156,.1));
+ }
+ .mobile-dock .dock-add .cinna-add-art img {
+   display:block!important;width:80px;height:70px;object-fit:contain;
+ }
+ .mobile-dock .dock-add .dock-add-label { display:block!important;position:relative;font-size:11px;line-height:14px;letter-spacing:.01em; }
+ body[data-profile="lily"] .mobile-dock .dock-add svg { display:none!important; }
+ body[data-profile="lily"] .mobile-dock .dock-add:active {transform:translateY(-5px) scale(.97);background:#c6eaff;}
+ body[data-profile="lily"] .mobile-dock .dock-add:focus-visible {outline:3px solid #af477d;outline-offset:4px;}
+ /* Nopal is still its own dark profile with a conventional plus. */
+ body[data-profile="nopal"] .mobile-dock { background:#20283e;border-color:#65738e; }
+ body[data-profile="nopal"] .mobile-dock .dock-add {background:#a2deb1;color:#1b3124;border:1px solid #83bf92;border-radius:17px;box-shadow:none;min-height:58px;}
+ body[data-profile="nopal"] .mobile-dock .dock-add svg { display:block!important; }
+ body[data-profile="nopal"] .mobile-dock .dock-add .cinna-add-art { display:none!important; }
+ body[data-profile="nopal"] .mobile-dock .dock-add .dock-add-label { display:block!important; }
+ body[data-profile="lily"] footer,body[data-profile="nopal"] footer,body.sticker-page footer {
+   padding-bottom:calc(117px + env(safe-area-inset-bottom))!important;
+ }
+ .toast { bottom:calc(106px + env(safe-area-inset-bottom)); }
+ body[data-profile="lily"] .content-grid { padding-top:16px; }
+ body[data-profile="lily"] .right-column { display:grid;gap:16px; }
+ body[data-profile="lily"] .budget-section,body[data-profile="lily"] .category-section { margin-top:0!important; }
+ body[data-profile="lily"] .dream-garden,body[data-profile="lily"] .sticker-preview { margin-top:16px; }
+ body[data-profile="lily"] .lily-banner { margin-top:0; }
+ /* Controls and cards align to a steady 12/16/20px rhythm. */
+ body[data-profile="lily"] .overview,
+ body[data-profile="lily"] .activity,
+ body[data-profile="lily"] .budget-section,
+ body[data-profile="lily"] .category-section,
+ body[data-profile="lily"] .dream-garden,
+ body[data-profile="lily"] .sticker-preview { border-radius:20px; }
+ body[data-profile="lily"] .metric-card { border-radius:15px; }
+ body[data-profile="lily"] :is(.filters input,.filters select,.history-toggle) { border-radius:12px; }
+ body[data-profile="lily"] .sync-detail { margin-bottom:0; }
+ body[data-profile="lily"] .lily-banner { border-radius:21px; }
+ body[data-profile="lily"] .sky-toolbar { margin:8px 0 11px; }
+ body[data-profile="lily"] .mood-board { margin:0; }
+ body[data-profile="lily"] .section-footer { flex-wrap:wrap; }
+ body.sticker-page .mobile-dock { grid-template-columns:repeat(2,minmax(0,1fr)) minmax(70px,1.13fr) minmax(0,1fr); }
+ body.sticker-page .mobile-dock .dock-add { min-height:64px; }
+}
+@media(max-width:520px) {
+ body[data-profile="lily"] .activity,body[data-profile="lily"] .budget-section,body[data-profile="lily"] .category-section { padding:16px 13px; }
+ body[data-profile="lily"] .overview { padding:15px 13px 17px; }
+ body[data-profile="lily"] .headline-grid { gap:9px; }
+ body[data-profile="lily"] .metric-card { min-height:112px;padding:12px 10px 10px; }
+ body[data-profile="lily"] .metric-amount { font-variant-numeric:tabular-nums;font-size:clamp(18px,5.2vw,23px);letter-spacing:-.035em;overflow-wrap:anywhere; }
+ body[data-profile="lily"] .metric-sub { line-height:1.35; }
+ body[data-profile="lily"] .lily-banner { padding:16px; }
+ body[data-profile="lily"] .dream-garden { padding:20px 16px 2px; }
+ #entry-dialog { width:calc(100vw - 20px);margin:auto; border-radius:22px; }
+ #entry-dialog .dialog-body { padding:17px 15px; }
+ #entry-dialog .dialog-header { padding-right:1px; }
+ #entry-dialog .dialog-bottom .action { min-width:0;flex:1; }
+}
+@media(max-width:365px) {
+ body[data-profile="lily"] .sync-detail { padding:8px; }
+ body[data-profile="lily"] .metric-card { padding:10px 8px; }
+ body[data-profile="lily"] .metric-amount { font-size:17px; }
+ .mobile-dock { column-gap:0; }
+ .mobile-dock .dock-link { font-size:10px; }
+ .mobile-dock .dock-add .cinna-add-art { width:72px; }
+ .mobile-dock .dock-add .cinna-add-art img { width:74px; }
+ body[data-profile="lily"] .lily-banner-copy { max-width:65%; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .mobile-dock .dock-add,.cinna-desktop-add { transition:none!important;animation:none!important; }
+}
+/* Sticker belongs beside the form title, not on top of it. */
+body[data-profile="lily"] #entry-dialog .dialog-header { min-height:65px;padding-left:71px;gap:7px;align-items:center;margin-bottom:15px; }
+body[data-profile="lily"] #entry-dialog .dialog-puppy { left:-4px;top:0;width:69px;height:64px;transform:rotate(-7deg); }
+body[data-profile="lily"] #entry-dialog .dialog-header h2 { font-size:clamp(23px,5.6vw,27px);line-height:1.1;letter-spacing:-.035em; }
+body[data-profile="lily"] #entry-dialog #close-dialog { flex:0 0 42px; }
+@media(max-width:365px) {
+ body[data-profile="lily"] #entry-dialog .dialog-header { padding-left:63px;gap:4px; }
+ body[data-profile="lily"] #entry-dialog .dialog-puppy { width:61px;height:59px; }
+ body[data-profile="lily"] #entry-dialog .dialog-header h2 { font-size:23px; }
+}
+@media(hover:hover) and (pointer:fine) and (max-width:735px) {
+ body[data-profile="lily"] .mobile-dock .dock-add:hover { background:#d0edff; }
+ body[data-profile="lily"] .mobile-dock .dock-add:hover .cinna-add-art img { transform:rotate(-5deg) scale(1.04);transition:transform .18s ease; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .mobile-dock .cinna-add-art img { transform:none!important;transition:none!important; }
+}
+@media(max-width:735px) {
+ /* Grid gap already separates the third panel; do not double it with legacy margins. */
+ body[data-profile="lily"] .right-column > .note-panel { margin-top:0; }
+}
+
+
+/* ============================================================
+   Alignment revision: return to the original Saku-style masthead
+   without its product name; correct stacked CSS-era offsets.
+   This lives in the EXISTING final stylesheet, not a new layer.
+   ============================================================ */
+body[data-profile="lily"] .shell, body.sticker-page .shell { min-width:0; }
+body[data-profile="lily"] .topbar {
+  box-sizing:border-box;
+  height:auto;min-height:76px;
+  margin:12px 0 0;padding:10px 19px;
+  gap:14px;align-items:center;
+  background:#f8fcff;border:1px solid #d0e8f4;
+  border-bottom:2px dashed #c1e4f5;border-radius:18px;
+  box-shadow:none;
+}
+body[data-profile="lily"] .topbar .brand {
+  display:flex;align-items:center;flex:0 1 auto;
+  min-width:0;gap:10px;white-space:nowrap;
+}
+body[data-profile="lily"] .brand-wordmark {
+  font:700 clamp(29px,2.9vw,37px)/1 'Fredoka','Trebuchet MS',sans-serif;
+  letter-spacing:-.07em;color:#337fa8;flex:0 0 auto;
+}
+body[data-profile="lily"] .brand-dot {color:#e197ba;}
+body[data-profile="lily"] .brand-sticker {
+  width:47px;height:46px;object-fit:contain;
+  flex:0 0 auto;margin:0;
+}
+body[data-profile="lily"] .brand-description {
+  flex:0 1 auto;min-width:0;margin-left:4px;
+  padding:3px 0 3px 15px;
+  border-left:1px solid #bfdce9;
+  color:#436f8b;font:850 11px/1.25 'Nunito',sans-serif;
+  letter-spacing:.005em;
+}
+body[data-profile="lily"] .topbar-actions {display:flex;align-items:center;gap:9px;flex:0 0 auto;margin-left:auto;}
+body[data-profile="lily"] .sticker-nav {min-height:43px;border-radius:13px;padding:8px 13px;box-shadow:none;}
+body[data-profile="lily"] .desktop-nav {margin-inline:auto;gap:1px;}
+body[data-profile="lily"] .desktop-nav a {padding:10px 11px;}
+/* Keep the wordmark readable on both pastel daytime and dark evening skies. */
+body[data-profile="lily"][data-sky="night"] .topbar {
+  background:#edf6ff;border-color:#99bce0;
+  border-bottom-color:#a1c7e6;
+}
+body[data-profile="lily"][data-sky="night"] .brand-wordmark {color:#276b99;}
+body[data-profile="lily"][data-sky="night"] .brand-dot {color:#b95587;}
+body[data-profile="lily"][data-sky="night"] .brand-description {color:#365f81;border-left-color:#b4d3e8;}
+body[data-profile="lily"][data-sky="night"] .sticker-nav {background:#fff;color:#275d80;border-color:#bdd6e9;}
+body[data-profile="lily"][data-sky="night"] .desktop-nav a {color:#dceaff;}
+/* Sync status belongs under the header, not detached by a blank band. */
+body[data-profile="lily"] .sync-detail {
+  margin:9px 0 0;padding:10px 13px;gap:10px;
+  border-radius:15px;box-shadow:none;
+}
+body[data-profile="lily"] .sync-detail > img {flex:0 0 30px;width:30px;height:30px;object-fit:contain;}
+body[data-profile="lily"] .sync-detail .sync-main {min-width:0;}
+body[data-profile="lily"] .sync-detail .sync-head {gap:3px 10px;}
+body[data-profile="lily"] .sync-detail #refresh-btn {margin-left:auto;}
+/* Rhythm: overview -> note -> two aligned controls -> next card. */
+body[data-profile="lily"] .overview {margin-bottom:0;}
+body[data-profile="lily"] .lily-banner {margin-top:17px;margin-bottom:0;}
+body[data-profile="lily"] .sky-toolbar {
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;min-height:52px;
+  gap:12px;padding:0 2px;margin:9px 0 12px;
+}
+body[data-profile="lily"] .sky-toolbar > span {max-width:unset;min-width:0;line-height:1.3;}
+body[data-profile="lily"] .magic-tools {display:flex;align-items:center;flex:0 0 auto;gap:8px;}
+body[data-profile="lily"] .sky-toggle,
+body[data-profile="lily"] .companion-button {
+  box-sizing:border-box;height:46px;min-height:46px;
+  border:1px solid #b4d9ec;border-radius:13px;
+  box-shadow:0 2px 0 #b8daeb;
+}
+body[data-profile="lily"] .sky-toggle {display:inline-flex;align-items:center;justify-content:center;padding:8px 13px;}
+body[data-profile="lily"] .companion-button {
+  width:46px!important;height:46px!important;padding:3px;
+  background:#e8f6ff;
+}
+body[data-profile="lily"] .companion-button img {width:100%;height:100%;object-fit:contain;}
+body[data-profile="lily"] .companion-sparkle {right:-2px;top:-6px;font-size:12px;}
+body[data-profile="lily"] .companion-bubble {bottom:calc(100% + 8px);}
+body[data-profile="lily"] .mood-board {margin-top:0!important;}
+body[data-profile="lily"] .lily-banner .hero-cheer {top:8px;right:30%;width:56px;height:56px;opacity:.75;}
+body[data-profile="lily"] .lily-banner .banner-corner-art {right:13%;top:7px;bottom:auto;width:46px;height:46px;}
+/* Avoid double dividers and large negative margins around the footer. */
+body[data-profile="lily"] footer {margin-top:28px;gap:14px;align-items:center;}
+body[data-profile="lily"] .overview-bottom {column-gap:12px;}
+body[data-profile="lily"] .overview-bottom strong {white-space:nowrap;font-variant-numeric:tabular-nums;}
+body[data-profile="lily"] .record {min-width:0;}
+/* Responsive: explicit sizes prevent a thousand tiny accumulated offsets. */
+@media(max-width:1060px){body[data-profile="lily"] .topbar .desktop-nav {display:none;}}
+@media(max-width:735px){
+  body[data-profile="lily"] .topbar {
+    height:auto;min-height:64px;margin-top:7px;
+    padding:7px 12px;gap:8px;border-radius:15px;
+  }
+  body[data-profile="lily"] .topbar .brand {gap:5px;}
+  body[data-profile="lily"] .brand-wordmark {font-size:clamp(26px,7.5vw,33px);letter-spacing:-.075em;}
+  body[data-profile="lily"] .brand-sticker {width:41px;height:41px;}
+  body[data-profile="lily"] .brand-description {font-size:10px;padding-left:10px;margin-left:4px;}
+  body[data-profile="lily"] .topbar .desktop-add {display:none;}
+  body[data-profile="lily"] .sticker-nav {padding:7px 10px;min-height:41px;}
+  body[data-profile="lily"] .sync-detail {margin-top:8px;padding:9px 10px;gap:9px;}
+  body[data-profile="lily"] .sync-detail > img {display:block;width:25px;height:25px;flex-basis:25px;}
+  body[data-profile="lily"] .sync-detail #sync-last {font-size:10px;}
+  body[data-profile="lily"] .sync-detail #refresh-btn {width:42px;height:42px;min-height:42px;flex:0 0 42px;}
+  body[data-profile="lily"] .intro {padding-top:14px;padding-bottom:12px;}
+  body[data-profile="lily"] .overview {margin:0;}
+  body[data-profile="lily"] .lily-banner {margin-top:15px;border-radius:20px;}
+  body[data-profile="lily"] .lily-banner .hero-cheer {display:none;}
+  body[data-profile="lily"] .lily-banner .banner-corner-art {top:6px;right:10%;width:37px;height:37px;opacity:.75;}
+  body[data-profile="lily"] .sky-toolbar {height:48px;min-height:48px;margin:10px 0 12px;padding:0 2px;gap:8px;}
+  body[data-profile="lily"] .sky-toolbar>span {font-size:11px;max-width:none;}
+  body[data-profile="lily"] .sky-toggle,body[data-profile="lily"] .companion-button {height:44px;min-height:44px;}
+  body[data-profile="lily"] .companion-button {width:44px!important;height:44px!important;}
+  body[data-profile="lily"] .magic-tools {gap:8px;}
+  body[data-profile="lily"] .mood-board {margin-bottom:0;}
+  body[data-profile="lily"] .content-grid {padding-top:16px;}
+  /* Dock stays IN the viewport, with the sticker centered in its own tap target. */
+  body[data-profile="lily"] .mobile-dock,body[data-profile="nopal"] .mobile-dock {
+    box-sizing:border-box;align-items:center;
+    height:75px;min-height:75px;
+    left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    padding:6px 7px;gap:3px;border-radius:19px;
+    box-shadow:0 9px 24px rgba(24,72,110,.17);
+  }
+  .mobile-dock .dock-link {align-self:center;min-height:59px;gap:3px;border-radius:12px;}
+  body[data-profile="lily"] .mobile-dock .dock-add,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add {
+    box-sizing:border-box;align-self:center;justify-content:flex-end;
+    height:66px;min-height:66px;width:100%;padding:42px 2px 5px;
+    transform:translateY(-5px);border-radius:17px;
+    box-shadow:0 2px 0 #afd8ed;
+  }
+  .mobile-dock .dock-add .cinna-add-art {
+    top:-12px;width:72px;height:58px;
+  }
+  .mobile-dock .dock-add .cinna-add-art img {width:71px;height:58px;}
+  .mobile-dock .dock-add .dock-add-label {line-height:13px;}
+  body[data-profile="lily"] .mobile-dock .dock-add:active {transform:translateY(-3px) scale(.98);}
+  body[data-profile="lily"] footer,body[data-profile="nopal"] footer,body.sticker-page footer {
+    padding-bottom:calc(111px + env(safe-area-inset-bottom))!important;
+  }
+}
+@media(max-width:520px){
+  body[data-profile="lily"] .shell,body.sticker-page .shell {width:calc(100% - 20px);}
+  body[data-profile="lily"] .topbar {padding-inline:10px;}
+  body[data-profile="lily"] .brand-description {font-size:9px;line-height:1.22;}
+  body[data-profile="lily"] .sticker-nav {font-size:11px;}
+  body[data-profile="lily"] .intro {padding-top:13px;padding-bottom:11px;}
+  body[data-profile="lily"] .overview-bottom {align-items:center;justify-content:space-between;}
+  body[data-profile="lily"] .overview-bottom strong {margin-left:auto;}
+  body[data-profile="lily"] .lily-banner {margin-top:15px;min-height:173px;padding:15px 14px;}
+  body[data-profile="lily"] .lily-banner-copy {max-width:64%;}
+  body[data-profile="lily"] .lily-banner-art {bottom:0;right:0;max-width:45%;}
+  body[data-profile="lily"] .sky-toolbar > span {max-width:135px;font-size:10px;}
+  body[data-profile="lily"] .sky-toggle {padding:7px 10px;font-size:11px;}
+  body[data-profile="lily"] .companion-button {width:44px!important;height:44px!important;}
+  body[data-profile="lily"] .mood-board {margin:0;padding-block:10px;}
+  body[data-profile="lily"] .content-grid {padding-top:15px;}
+}
+@media(max-width:365px){
+  body[data-profile="lily"] .topbar {padding:7px 8px;gap:5px;}
+  body[data-profile="lily"] .brand-wordmark {font-size:25px;}
+  body[data-profile="lily"] .brand-sticker {width:35px;height:36px;}
+  body[data-profile="lily"] .brand-description {padding-left:7px;margin-left:2px;font-size:9px;}
+  body[data-profile="lily"] .sticker-nav {min-height:39px;padding:7px 7px;gap:2px;}
+  body[data-profile="lily"] .sticker-nav span:last-child {font-size:10px;}
+  body[data-profile="lily"] .sky-toolbar>span {display:block;max-width:94px;font-size:9px;}
+  body[data-profile="lily"] .magic-tools {width:auto;gap:5px;justify-content:flex-end;}
+  body[data-profile="lily"] .magic-tools .lily-companion {order:initial;}
+  .mobile-dock .dock-link {font-size:10px;}
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-profile="lily"] .companion-button img {animation:none!important;}
+}
+/* The legacy @media rules hid the subtitle entirely; this is intentional. */
+body[data-profile="lily"] .brand-description {display:block;}
+
+/* Keep the secondary account a real, legible profile after the DOM change. */
+body[data-profile="nopal"] .brand-wordmark {font:700 clamp(23px,2.8vw,31px)/1 'Fredoka',sans-serif;letter-spacing:-.055em;color:#dde6ff;}
+body[data-profile="nopal"] .brand-dot {color:#a5d6ba;}
+body[data-profile="nopal"] .brand-description {color:#b8c6e4;}
+html {scroll-padding-bottom:calc(105px + env(safe-area-inset-bottom));}

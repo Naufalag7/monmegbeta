@@ -20,7 +20,7 @@ Lily should immediately know what came in, what went out, what she set aside, an
 
 ## Information hierarchy
 
-1. **Brand and clearly worded sync status.** The brand says *Lily’s fun world*, not *Saku*. Connection detail follows the top bar, including timestamp of most recent successful CSV fetch and number of unconfirmed POSTs.
+1. **Brand and clearly worded sync status.** The header masthead says *Lily’s.* with *little sky journal*, not *Saku*. Connection detail follows the top bar, including timestamp of most recent successful CSV fetch and number of unconfirmed POSTs.
 2. **Greeting + profile switch.** Little emotional note, not a big hero.
 3. **Four factual monthly totals first:** income, expenses, saved, and net cash flow. Net = income − expenses − savings. The longer-history net is labeled as **cash flow, not account balance**.
 4. **Daily spending chart** sourced entirely from actual dated expenses. Real zero/empty/loading/error treatments; no random bar heights or fictional events.
@@ -80,3 +80,23 @@ The current Apps Script accepts append-only, cross-origin `no-cors` POST request
 - **Night theme:** logo, secondary labels and navigation links are recolored to remain legible against navy.
 - **Reference inspirations:** Monzo's balance-first hierarchy; YNAB's Home/Spending/goal grouping and quick-add; Apple's labeled tab navigation; Material's 3–5 destinations on compact displays. We kept Saku's scrapbook identity rather than copying a bank UI.
 - **anti-slop delivery filter:** real controls, real data, explicit errors, phone layouts without horizontal overflow, visible focus and reduced motion. `iFixAi` was reviewed but is intentionally not used: there is no AI agent in this website.
+
+## November 9 — Cinna-first transaction action and shape cleanup
+
+- **Core affection:** The transparent `cheer.webp` sticker **is** the Add Transaction button on compact screens. Its fixed, centered hit area is 64px high with a visible **Catat** label; the art floats only visually, never as a moving click target. The action opens the existing native transaction dialog and sends to the same Apps Script; no parallel forms or simulated writes.
+- **One dock layout:** On the journal page: Beranda · Riwayat · **Cinna/Catat** · Tabungan (Budget for Nopal). On the sticker page: Beranda · Riwayat · **Cinna/Catat** · Stiker. The sticker-page action links back to the journal with a one-shot `?catat=1` parameter to open the real form, then removes the parameter.
+- **Secondary path:** The desktop transaction button has a visible sticker. The Cinna companion's *Catat transaksi ♡* item is another working entry point.
+- **Spacing and shape scale:** 6/10/16/22px spacing, 23px section-card corners, 16px inner-card corners, ~13px control corners, simplified soft shadows. Narrow cards use matching 20px corners instead of mixing arbitrary shapes. The two right-column panels are separated by the same 16px gap as the next section.
+- **Native accessibility:** The mascot button remains a real labeled `<button>` (on the journal), a real deep-link `<a>` (in the gallery), keyboard-focusable and ≥44px. Nopal uses the original conventional plus glyph and an accurate accessible label. Respect reduced motion and safe-area insets.
+- **Controls never collide:** The bottom dock is inset and includes footer scroll clearance. The entry dialog art is smaller and aligned beside the heading; title, form fields, and submit/cancel are legible at 320px.
+- **Limitations unchanged:** Published Sheets feeds may lag; POST is still `no-cors` and cannot certify success; old rows still require source-Sheet edits. This task does not add an AI agent, so **iFixAi is intentionally not used**.
+
+
+## Masthead / alignment refinement (Nov 2026)
+
+- The brand is a single Saku-inspired wordmark `Lily’s.` plus a transparent sticker and the calm `little sky journal` caption. Never display the old `Saku` logo.
+- A stable 8/12/16px spacing rhythm replaces stacked negative margins, especially around the monthly report, Cinna note, sky tools, and mood controls.
+- The sky toggle and Cinna companion are 44px peers on mobile; neither floats over content.
+- The dock mascot is a real form trigger with a bounded tap target, not an illustration that masks the transaction list.
+- The night palette keeps a light masthead with dark navy text for contrast and continuity.
+- Test mobile widths of 320/390 and tablet/desktop widths of 768/1440; do not hide financial data behind decorative elements.

@@ -52,3 +52,14 @@ Browser-based checks were run using an isolated page with **synthetic test-only 
 ## Licensing note
 
 Cinnamoroll is a character of Sanrio. This is an unofficial personal fan design. Owning a downloaded transparent image is not the same as holding commercial usage rights.
+
+### Cinna-first Add Transaction (latest revision)
+
+On mobile, tap the center **Cinnamoroll sticker / Catat** action to open the same transaction form used on desktop. The sticker is also in the desktop Add Transaction control and in Cinna's companion menu. From `stickers.html`, its dock shortcut returns to `index.html?catat=1` and opens the form automatically; the one-time parameter is cleared.
+
+The latest masthead, spacing and bottom-dock fixes are in `finishing.css`. Keep the stylesheet order `style.css` → `redesign.css` → `polish.css` → `finishing.css` in both pages. You can change the mascot art via `assets/stickers/cheer.webp` in the two dock elements; do not change their IDs or form event bindings. Google Sheets URLs are unchanged.
+
+
+## Latest alignment fix
+
+The visible header now reads **Lily’s.** beside a transparent Cinnamoroll sticker and the small **little sky journal** caption. The status strip, hero-to-toolbar spacing, and bottom dock have been realigned for phone widths. `script.js` was updated for profile switching; please deploy it together with both HTML pages and `finishing.css`. For the exact checks see `QA-LAYOUT.md`.

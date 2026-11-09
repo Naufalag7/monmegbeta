@@ -19,3 +19,25 @@ See `DESIGN.md` (anti-slop design contract), `AUDIT.md` (baseline findings, test
 - Moved Cinna companion from a fixed lower-left overlay into the sky toolbar, preserving every magic-menu action.
 - Ensured night-sky brand and controls remain legible; added exact daily spending chart selection by touch and keyboard, without drawing pretend spending bars on zero days.
 - Reference checks: Monzo, YNAB, Material navigation, Apple tab-bar guidance and anti-slop. iFixAi intentionally not run without an agent to audit.
+
+## Cinnamoroll Add Transaction + spacing refresh (9 November 2026)
+
+- Mobile Catat now **is a transparent, tappable Cinnamoroll sticker**, centrally anchored in an inset bottom dock; Beranda/Riwayat/Tabungan stay labeled and clickable.
+- Gallery's Catat sticker returns to the original transaction form via a one-use query flag.
+- Desktop Catat and the companion's little-magic menu also offer a Cinna entry point. Nopal retains a regular plus.
+- Panels, controls, gaps, border radii and shadows use a consistent visual scale; the narrow-screen transaction dialog has a smaller, aligned mascot and readable single-line heading.
+- All Google Sheets read/write endpoints and financial logic are unchanged.
+- Final code layer `finishing.css` is deliberately separated from older styles to simplify rollback and future refinement.
+
+## Masthead, gaps & dock alignment (9 November 2026 — latest)
+
+- Replaced the cramped stacked header with a Saku-*style* `Lily’s.` masthead, beside transparent Cinna art, a fine divider, and the readable `little sky journal` subtitle. The old `Saku` name does **not** appear in the UI.
+- Kept the header and Sheets status edges aligned, including a readable high-contrast light masthead in night-sky mode.
+- Normalized the spacing between monthly totals, Cinna banner, sky controls and mood picker to a 8/12/16px rhythm; eliminated floating decorative assets that crossed the banner edge on narrow screens.
+- Aligned the Day/Night and companion buttons to matching 44px controls on phones.
+- Adjusted the fixed bottom dock and its tappable Cinna action so the sticker is centered, with a smaller and consistent lift; preserved the actual transaction form trigger.
+- Fixed profile-switching JavaScript to target the new masthead, retaining Nopal’s alternate branding and accessible labels.
+- No changes to Google Sheets feed URLs, write API, calculations or asset filenames.
+
+Browser checks (isolated, test-only CSV): 320/390/768/1440px, no horizontal scrolling or browser JS errors; Lily/Nopal switching, Catat modal, note shortcut replacement, Cinna companion action and gallery render.
+Node data tests: 5/5 pass. Google Sheets production reads/writes were **not** tested.
