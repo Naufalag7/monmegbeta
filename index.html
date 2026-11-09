@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#d7efff">
+  <meta name="description" content="Saku Mocha. Catatan uang Lily dan Nopal, terhubung dengan Google Sheets yang sudah ada.">
+  <title>Saku / Lily’s Cinna Sky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link id="app-favicon" rel="icon" type="image/webp" href="assets/stickers/hello.webp">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body data-profile="lily">
+  <a class="skip" href="#main">Lewati ke konten</a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Saku, jurnal keuangan">
+        <span class="brand-logo">saku<span>.</span></span><img class="lily-only brand-sticker" src="assets/stickers/hello.webp" width="51" height="42" alt="" aria-hidden="true">
+        <span class="brand-description" id="brand-description">Lily’s little<br>sky journal</span>
+      </div>
+      <div class="topbar-actions">
+        <div id="sync-status" class="sync-status" role="status" aria-live="polite"><span class="sync-dot"></span><img class="lily-only sync-puppy" src="assets/stickers/bouncy.webp" width="35" height="30" alt="" aria-hidden="true"><span id="sync-label">Memuat data</span></div>
+        <button class="icon-btn" type="button" id="refresh-btn" aria-label="Muat ulang data" title="Muat ulang data">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.8 9A7 7 0 0 1 18.5 7L20 12M4 12l1.5 5A7 7 0 0 0 18.2 15"/></svg>
+        </button>
+        <button class="action primary desktop-add" type="button" id="new-entry-top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Catat transaksi</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <div class="intro">
+        <div>
+          <div class="eyebrow" id="intro-eyebrow">BUKU KEUANGAN / <span id="person-heading">LILY</span></div>
+          <h1 id="intro-title">Hello, <em>Lily!</em></h1>
+          <p class="intro-desc" id="intro-description">A little cloud for every money moment.</p>
+        </div>
+        <div class="profile-switch" role="group" aria-label="Pilih profil keuangan">
+          <button type="button" class="profile active" data-profile="lily" aria-pressed="true"><img src="assets/stickers/hello.webp" alt="" width="39" height="28"><span>Lily</span></button>
+          <button type="button" class="profile" data-profile="nopal" aria-pressed="false">Nopal</button>
+        </div>
+      </div>
+
+      <section class="lily-banner" aria-label="Tema langit Cinnamoroll untuk Lily">
+        <div class="lily-banner-copy">
+          <span class="lily-banner-kicker">WELCOME TO LILY’S LITTLE SKY</span>
+          <h2>Every little coin<br><em>has a cloud. ♡</em></h2>
+          <p>Catatan uang sehari-hari, ditemani Cinna yang super gemas.</p>
+          <button type="button" class="cinna-mail" id="open-letter" aria-haspopup="dialog"><span aria-hidden="true">✉</span> psst… a letter for Lily <span aria-hidden="true">♡</span></button>
+          <span class="lily-art-credit">Unofficial fan theme · Cinnamoroll © Sanrio</span>
+        </div>
+        <span class="hero-heart hero-heart-one" aria-hidden="true">♡</span>
+        <span class="hero-heart hero-heart-two" aria-hidden="true">✳</span>
+        <img class="hero-cheer" src="assets/stickers/cheer.webp" alt="" aria-hidden="true" width="120" height="120">
+        <img class="lily-banner-art" src="assets/stickers/bouncy.webp" width="380" height="265" alt="Ilustrasi Cinnamoroll, anak anjing putih bertelinga panjang dengan mata biru dan pipi merah muda">
+      </section>
+
+
+<div class="lily-extra sky-toolbar" aria-label="Langit Lily">
+  <span><span aria-hidden="true">✦</span> made with clouds, hugs &amp; a little magic</span>
+  <button id="sky-toggle" type="button" class="sky-toggle" aria-pressed="false" aria-label="Ganti ke langit malam"><span id="sky-icon" aria-hidden="true">☾</span><span id="sky-label">Night sky</span></button>
+</div>
+<section class="lily-extra mood-board" aria-label="Pilih suasana Cinnamoroll">
+  <div class="mood-copy">
+    <span class="mood-small">♡ PICK YOUR CINNA MOOD</span>
+    <strong id="mood-message">A little happy cloud just for Lily!</strong>
+    <span id="mood-subline">Pilih Cinna sesuai mood hari ini, yuk.</span>
+  </div>
+  <div class="mood-choices" role="group" aria-label="Pilih mood hari ini">
+    <button class="mood-choice is-selected" type="button" data-mood="happy" aria-pressed="true" title="Happy"><img src="assets/stickers/cheer.webp" alt="Cinna happy" width="76" height="76"><span>happy</span></button>
+    <button class="mood-choice" type="button" data-mood="cozy" aria-pressed="false" title="Cozy"><img src="assets/stickers/hello.webp" alt="Cinna cozy" width="76" height="76"><span>cozy</span></button>
+    <button class="mood-choice" type="button" data-mood="bouncy" aria-pressed="false" title="Playful"><img src="assets/stickers/bouncy.webp" alt="Cinna playful" width="76" height="76"><span>playful</span></button>
+    <button class="mood-choice" type="button" data-mood="grumpy" aria-pressed="false" title="Grumpy"><img src="assets/stickers/grumpy.webp" alt="Cinna grumpy" width="76" height="76"><span>grumpy</span></button>
+  </div>
+</section>
+
+      <section class="overview" aria-label="Ringkasan bulanan">
+        <div class="overview-header">
+          <div class="label"><img class="lily-only period-sticker" src="assets/stickers/hello.webp" width="41" height="34" alt="" aria-hidden="true"> PERIODE <span id="period-code"></span></div>
+          <div class="months" role="group" aria-label="Pilih bulan">
+            <button type="button" id="prev-month" aria-label="Bulan sebelumnya"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+            <span id="month-label">November 2026</span>
+            <button type="button" id="next-month" aria-label="Bulan berikutnya"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+        <div class="headline-grid">
+          <div class="big-stat">
+            <div class="small-label">Pengeluaran bulan ini</div><img class="lily-only summary-puppy" src="assets/stickers/grumpy.webp" width="77" height="65" alt="" aria-hidden="true">
+            <div id="total-expenses" class="hero-amount">Rp 0</div>
+            <div id="expense-count" class="quiet">0 transaksi tercatat</div>
+          </div>
+          <div class="mini-stats">
+            <div><span>Pemasukan bulan ini</span><strong id="monthly-income" class="positive">Rp 0</strong></div>
+            <div><span>Ditabung bulan ini</span><strong id="monthly-savings" class="savings">Rp 0</strong></div>
+            <div><span>Sisa arus kas bulan ini</span><strong id="monthly-net">Rp 0</strong></div>
+            <div><span>Sisa arus kas riwayat</span><strong id="overall-net">Rp 0</strong></div>
+          </div>
+        </div>
+        <div class="chart-head"><span><img class="lily-only inline-puppy" src="assets/stickers/paper-ramen.webp" width="37" height="30" alt="" aria-hidden="true">Pengeluaran harian</span><span id="chart-caption">Berdasarkan riwayat bulan terpilih</span></div>
+        <div class="chart-wrap" id="chart" role="img" aria-label="Grafik pengeluaran per hari"></div>
+        <div class="chart-foot"><span id="chart-first">01</span><span id="chart-last">30</span></div>
+      </section>
+
+      <section class="lily-extra dream-garden" aria-labelledby="dream-heading">
+        <div class="dream-info">
+          <span class="dream-kicker">✧ CINNA'S LITTLE CLOUD GARDEN ✧</span>
+          <h2 id="dream-heading">Lily’s <em>saving sky</em> <span aria-hidden="true">☁</span></h2>
+          <p class="dream-description">Set a little savings goal, and watch your cloud fill with stars. Every step counts!</p>
+          <div class="dream-amount-row"><strong id="dream-current">Rp 0</strong><span>saved this month</span></div>
+          <div class="dream-progress" role="progressbar" id="dream-progress" aria-label="Kemajuan target tabungan bulanan" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="dream-progress-fill"></span></div>
+          <div class="dream-progress-note" id="dream-status">Pick a goal to start growing your sky ♡</div>
+          <form class="dream-goal-form" id="dream-form">
+            <label for="dream-goal">Monthly goal (Rp)</label>
+            <div class="dream-form-controls"><input type="number" min="1" step="1" inputmode="numeric" id="dream-goal" placeholder="e.g. 500000" required><button type="submit">Set goal <span aria-hidden="true">♡</span></button></div>
+          </form>
+        </div>
+        <div class="dream-art" id="dream-art" aria-label="Five stars bloom as your monthly savings approach the goal" role="img">
+          <span class="garden-star star-1" aria-hidden="true">✦</span><span class="garden-star star-2" aria-hidden="true">✧</span><span class="garden-star star-3" aria-hidden="true">★</span><span class="garden-star star-4" aria-hidden="true">✦</span><span class="garden-star star-5" aria-hidden="true">★</span>
+          <span class="garden-halo" aria-hidden="true"></span>
+          <div class="garden-cloud" aria-hidden="true">☁</div>
+          <img class="garden-cinna" src="assets/stickers/cheer.webp" width="160" height="142" alt="" aria-hidden="true">
+          <span class="garden-percent" id="dream-percent">♡</span>
+        </div>
+      </section>
+
+      <div class="content-grid">
+        <section class="activity" aria-labelledby="history-title">
+          <div class="section-top"><div><div class="eyebrow">01 / RIWAYAT</div><h2 id="history-title">Transaksi <img class="lily-only heading-puppy" src="assets/stickers/hello.webp" width="54" height="44" alt="" aria-hidden="true"></h2></div><span id="transaction-total" class="section-hint"></span></div>
+          <div class="filters">
+            <label><span class="sr">Cari transaksi</span><input type="search" id="search" placeholder="Cari keterangan..." autocomplete="off"></label>
+            <label><span class="sr">Jenis transaksi</span><select id="type-filter"><option value="all">Semua jenis</option><option value="Pengeluaran">Pengeluaran</option><option value="Pemasukan">Pemasukan</option><option value="Tabungan">Tabungan</option></select></label>
+          </div>
+          <div id="history" aria-live="polite" aria-busy="true" class="history"><div class="blank">Memuat riwayat transaksi…</div></div>
+          <div class="section-footer"><button class="underlined" type="button" id="export-btn">Unduh CSV bulan ini</button><span>Data: Google Sheets</span></div>
+        </section>
+        <aside class="right-column">
+          <section class="budget-section" aria-labelledby="budget-title">
+            <div class="section-top"><div><div class="eyebrow">02 / RENCANA</div><h2 id="budget-title">Budget bulanan <img class="lily-only heading-puppy" src="assets/stickers/cheer.webp" width="54" height="44" alt="" aria-hidden="true"></h2></div></div>
+            <p class="quiet">Batas kategori mengikuti pengaturan di tracker lama.</p>
+            <div class="budget-total"><img id="budget-mood" class="lily-only budget-mood" src="assets/stickers/hello.webp" width="79" height="68" alt="" aria-hidden="true"><div><span>Terpakai dari budget</span><strong id="budget-used">Rp 0</strong></div><span id="budget-pct">0%</span></div>
+            <div class="progress"><span id="budget-progress"></span></div>
+            <div id="budgets" class="budget-list"></div>
+          </section>
+          <section class="note-panel"><img class="lily-only note-puppy" src="assets/stickers/cheer.webp" width="86" height="70" alt="" aria-hidden="true">
+            <div class="eyebrow">CATATAN SISTEM</div>
+            <p>Riwayat dibaca dari Google Sheets yang sudah digunakan. Transaksi baru dikirim ke Apps Script lama.</p>
+            <p id="connection-note">Perubahan mungkin memerlukan waktu sebelum muncul di daftar karena data berasal dari CSV publikasi Sheets.</p>
+          </section>
+        </aside>
+      </div>
+
+<section class="lily-extra scrapbook" aria-labelledby="scrapbook-title">
+  <div class="scrapbook-heading">
+    <div>
+      <div class="scrapbook-kicker">✿ THE CUTEST LITTLE CORNER ✿</div>
+      <h2 id="scrapbook-title">Lily’s Cinna <em>sticker book</em></h2>
+      <p>Karena satu Cinnamoroll nggak akan pernah cukup. Tap stikernya buat lihat lebih dekat!</p>
+    </div>
+    <img class="scrapbook-mascot" src="assets/stickers/cheer.webp" alt="" aria-hidden="true" loading="lazy" width="160" height="160">
+  </div>
+  <div class="sticker-grid">
+          <button type="button" class="sticker-card" data-sticker="dreamy" data-caption="just five more minutes" aria-label="Lihat stiker just five more minutes">
+            <span class="sticker-number">01</span>
+            <img src="assets/stickers/paper-dreamy.webp" alt="Cinnamoroll mengantuk dan duduk santai" loading="lazy" decoding="async">
+            <span class="sticker-caption">just five more minutes</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="thinking" data-caption="hmm..." aria-label="Lihat stiker hmm...">
+            <span class="sticker-number">02</span>
+            <img src="assets/stickers/paper-thinking.webp" alt="Cinnamoroll berpikir dengan wajah bingung" loading="lazy" decoding="async">
+            <span class="sticker-caption">hmm...</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="sweater" data-caption="sweater weather" aria-label="Lihat stiker sweater weather">
+            <span class="sticker-number">03</span>
+            <img src="assets/stickers/paper-sweater.webp" alt="Cinnamoroll memakai baju biru" loading="lazy" decoding="async">
+            <span class="sticker-caption">sweater weather</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="letter" data-caption="little love note" aria-label="Lihat stiker little love note">
+            <span class="sticker-number">04</span>
+            <img src="assets/stickers/paper-letter.webp" alt="Cinnamoroll memegang surat" loading="lazy" decoding="async">
+            <span class="sticker-caption">little love note</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="ramen" data-caption="snack o’clock" aria-label="Lihat stiker snack o’clock">
+            <span class="sticker-number">05</span>
+            <img src="assets/stickers/paper-ramen.webp" alt="Cinnamoroll mengintip dari cup makanan" loading="lazy" decoding="async">
+            <span class="sticker-caption">snack o’clock</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="singing" data-caption="sing it, Cinna!" aria-label="Lihat stiker sing it, Cinna!">
+            <span class="sticker-number">06</span>
+            <img src="assets/stickers/paper-singing.webp" alt="Cinnamoroll bernyanyi dengan mikrofon" loading="lazy" decoding="async">
+            <span class="sticker-caption">sing it, Cinna!</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="happy-face" data-caption="squishy cheeks" aria-label="Lihat stiker squishy cheeks">
+            <span class="sticker-number">07</span>
+            <img src="assets/stickers/paper-happy-face.webp" alt="Cinnamoroll tersenyum dengan pipi ditekan" loading="lazy" decoding="async">
+            <span class="sticker-caption">squishy cheeks</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="wonder" data-caption="cloud thoughts" aria-label="Lihat stiker cloud thoughts">
+            <span class="sticker-number">08</span>
+            <img src="assets/stickers/paper-wonder.webp" alt="Cinnamoroll duduk di bawah gelembung pikiran" loading="lazy" decoding="async">
+            <span class="sticker-caption">cloud thoughts</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="hug" data-caption="hug attack" aria-label="Lihat stiker hug attack">
+            <span class="sticker-number">09</span>
+            <img src="assets/stickers/paper-hug.webp" alt="Cinnamoroll memeluk dirinya" loading="lazy" decoding="async">
+            <span class="sticker-caption">hug attack</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="icecream" data-caption="sweet treat" aria-label="Lihat stiker sweet treat">
+            <span class="sticker-number">10</span>
+            <img src="assets/stickers/paper-icecream.webp" alt="Cinnamoroll membawa dua es krim" loading="lazy" decoding="async">
+            <span class="sticker-caption">sweet treat</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="peek" data-caption="peek-a-boo" aria-label="Lihat stiker peek-a-boo">
+            <span class="sticker-number">11</span>
+            <img src="assets/stickers/paper-peek.webp" alt="Cinnamoroll membungkuk sambil mengintip" loading="lazy" decoding="async">
+            <span class="sticker-caption">peek-a-boo</span>
+          </button>
+          <button type="button" class="sticker-card" data-sticker="nap" data-caption="nap time" aria-label="Lihat stiker nap time">
+            <span class="sticker-number">12</span>
+            <img src="assets/stickers/paper-nap.webp" alt="Cinnamoroll tertidur meringkuk" loading="lazy" decoding="async">
+            <span class="sticker-caption">nap time</span>
+          </button>
+  </div>
+  <div class="winter-postcard">
+    <img src="assets/stickers/winter.jpg" alt="Ilustrasi Cinnamoroll dalam kostum biru dengan hati, bintang dan kepingan salju" loading="lazy" width="736" height="1593">
+    <div class="winter-postcard-copy"><span>ONE MORE LITTLE SURPRISE</span><strong>A pocket full of happy clouds!</strong><p>For Lily, with love &amp; an unreasonable amount of Cinnamoroll. ♡</p></div>
+  </div>
+</section>
+
+    </main>
+    <footer><span id="theme-footer">Saku / Cinnamoroll sky journal</span><span>Uangmu, catatanmu.</span></footer>
+  </div>
+
+  <button class="mobile-add" type="button" id="new-entry-mobile" aria-label="Catat transaksi"><img class="lily-only fab-puppy" src="assets/stickers/cheer.webp" width="52" height="45" alt="" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Catat</span></button>
+
+  <dialog id="entry-dialog" aria-labelledby="entry-title">
+    <form id="entry-form" class="dialog-body">
+      <div class="dialog-header"><img class="lily-only dialog-puppy" src="assets/stickers/hello.webp" width="87" height="72" alt="" aria-hidden="true"><div><div class="eyebrow">TRANSAKSI BARU</div><h2 id="entry-title">Catat uangmu</h2></div><button class="icon-btn" id="close-dialog" aria-label="Tutup" type="button"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <label class="form-field"><span>Jenis</span><select name="type" id="entry-type" required><option value="Pengeluaran">Pengeluaran</option><option value="Pemasukan">Pemasukan</option><option value="Tabungan">Tabungan</option></select></label>
+      <label class="form-field"><span>Nominal (Rp)</span><div class="amount-control"><b>Rp</b><input name="amount" id="entry-amount" type="number" inputmode="numeric" min="1" step="1" placeholder="0" required></div></label>
+      <div class="lily-extra note-ideas" aria-label="Ide cepat untuk keterangan"><span>Little shortcuts <span aria-hidden="true">✿</span></span><div class="idea-chips" role="group" aria-label="Isi keterangan dengan kategori"><button type="button" data-note="Makan">🍰 Makan</button><button type="button" data-note="Transport">🚌 Transport</button><button type="button" data-note="Skincare">🧴 Skincare</button><button type="button" data-note="Listrik">⚡ Listrik</button><button type="button" data-note="Arisan">🎀 Arisan</button></div></div>
+      <label class="form-field"><span>Keterangan</span><input name="note" id="entry-note" maxlength="180" placeholder="Mis. makan siang" autocomplete="off"></label>
+      <p class="lily-extra save-helper" id="save-helper">Cinna is cheering for your little money moments! ♡</p>
+      <label class="form-field"><span>Tanggal transaksi</span><input name="date" id="entry-date" type="date" required></label>
+      <div class="dialog-bottom"><button type="button" id="cancel-dialog" class="action secondary">Batal</button><button type="submit" class="action primary" id="submit-entry">Kirim ke Sheets</button></div>
+      <p class="form-disclaimer">Backend lama tidak mengonfirmasi hasil kirim. Periksa riwayat/Sheet sebelum mengirim ulang agar tidak membuat duplikat.</p>
+    </form>
+  </dialog>
+
+<dialog class="sticker-dialog" id="sticker-dialog" aria-labelledby="sticker-dialog-title">
+  <div class="sticker-dialog-inner">
+    <button class="sticker-close" type="button" id="sticker-dialog-close" aria-label="Tutup stiker">×</button>
+    <img id="sticker-dialog-image" src="assets/stickers/paper-hug.webp" alt="">
+    <strong id="sticker-dialog-title">hug attack</strong>
+    <span>♡ from Lily’s Cinna sticker book ♡</span>
+  </div>
+</dialog>
+<dialog id="letter-dialog" class="letter-dialog" aria-labelledby="letter-title">
+  <div class="letter-paper">
+    <button type="button" class="letter-close" id="letter-close" aria-label="Close letter">×</button>
+    <img src="assets/stickers/paper-letter.webp" width="165" height="145" alt="Cinnamoroll holding a little letter">
+    <span class="letter-overline">A LITTLE NOTE FROM CINNA ♡</span>
+    <h2 id="letter-title">Dear Lily,</h2>
+    <p>Some days are sunshine, some days are clouds. But every tiny step you take matters, even the ones nobody else sees.</p>
+    <p>Be gentle with yourself, celebrate your little wins, and don't forget to smile at the sky. You're doing lovely. ♡</p>
+    <span class="letter-signature">love &amp; fluffy hugs,<br><strong>Cinna ☁</strong></span>
+  </div>
+</dialog>
+<div class="lily-companion" id="lily-companion">
+  <div class="companion-bubble" id="companion-bubble" role="status" aria-live="polite">psst… tap me! ♡</div>
+  <button type="button" id="companion-button" class="companion-button" aria-label="Say hello to Cinna"><img id="companion-image" src="assets/stickers/hello.webp" width="98" height="98" alt="" aria-hidden="true"><span class="companion-sparkle" aria-hidden="true">✧</span></button>
+</div>
+<div class="cinna-particles" id="cinna-particles" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
