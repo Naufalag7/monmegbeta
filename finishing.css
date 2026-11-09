@@ -379,3 +379,255 @@ body[data-profile="nopal"] .brand-wordmark {font:700 clamp(23px,2.8vw,31px)/1 'F
 body[data-profile="nopal"] .brand-dot {color:#a5d6ba;}
 body[data-profile="nopal"] .brand-description {color:#b8c6e4;}
 html {scroll-padding-bottom:calc(105px + env(safe-area-inset-bottom));}
+
+
+/* Lily's Fun World: modal close contrast + symmetrical mobile dock.
+   Append to the END of finishing.css. */
+
+/* Keep the X readable even when night sky is enabled. */
+body[data-profile="lily"] #entry-dialog #close-dialog {
+  color: #376b90;
+  background: #edf8ff;
+  border: 1px solid #a8d5ee;
+}
+body[data-profile="lily"] #entry-dialog #close-dialog:hover {
+  background: #d9efff;
+}
+#entry-dialog #close-dialog svg {
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+/* Four equal-width items; the Cinna sticker stays INSIDE its own tab. */
+@media (max-width: 735px) {
+  body[data-profile="lily"] .mobile-dock,
+  body[data-profile="lily"].sticker-page .mobile-dock,
+  body[data-profile="nopal"] .mobile-dock,
+  body[data-profile="nopal"].sticker-page .mobile-dock {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+    height: 76px;
+    min-height: 76px;
+    padding: 6px;
+    column-gap: 4px;
+  }
+
+  .mobile-dock .dock-link {
+    align-self: stretch;
+    height: 62px;
+    min-height: 0;
+    padding: 5px 2px;
+    gap: 3px;
+    justify-content: center;
+  }
+
+  body[data-profile="lily"] .mobile-dock .dock-add,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add {
+    align-self: stretch;
+    /* Reset the old floating-add offsets (right:9px; bottom:10px). */
+    top: auto; right: auto; bottom: auto; left: auto;
+    height: 62px;
+    min-height: 62px;
+    margin: 0;
+    padding: 3px 2px;
+    gap: 1px;
+    justify-content: center;
+    border-radius: 15px;
+    transform: none !important;
+  }
+
+  .mobile-dock .dock-add .cinna-add-art {
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 46px;
+    height: 40px;
+    flex: 0 0 40px;
+    filter: none;
+  }
+
+  .mobile-dock .dock-add .cinna-add-art img {
+    width: 46px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .mobile-dock .dock-add .dock-add-label {
+    font-size: 11px;
+    line-height: 13px;
+  }
+
+  body[data-profile="lily"] .mobile-dock .dock-add:active {
+    transform: scale(.97) !important;
+  }
+
+  body[data-profile="nopal"] .mobile-dock .dock-add {
+    align-self: stretch;
+    height: 62px;
+    min-height: 0;
+    margin: 0;
+    transform: none;
+  }
+}
+
+
+/* ========================================================
+   Lily's Fun World — Cinna POP + small tactile interactions
+   CSS only; no change to financial logic, event listeners,
+   network requests, or DOM structure. November 2026.
+   ======================================================== */
+
+/* Animating CSS 'scale' separately keeps all existing transform-
+   based positioning intact (floating menus, stickers, tooltips). */
+:where(button:not(:disabled), a.dock-link, a.sticker-nav,
+       a.back-dashboard, a.cinna-mail, a.action, a.dock-add,
+       a.underlined, a.desktop-nav, a.sticker-preview-link) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  button:not(:disabled),
+  a.dock-link, a.sticker-nav, a.back-dashboard,
+  a.cinna-mail, a.action, a.dock-add, a.underlined,
+  .desktop-nav a, footer a {
+    transition: scale 190ms cubic-bezier(.18,.75,.25,1.25),
+                transform 190ms ease,
+                background-color 190ms ease,
+                border-color 190ms ease,
+                box-shadow 190ms ease,
+                color 190ms ease,
+                filter 190ms ease !important;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    button:not(:disabled):hover,
+    a.dock-link:hover, a.sticker-nav:hover, a.back-dashboard:hover,
+    a.cinna-mail:hover, a.action:hover, a.dock-add:hover, a.underlined:hover,
+    .desktop-nav a:hover, footer a:hover {
+      scale: 1.025;
+    }
+  }
+  button:not(:disabled):active,
+  a.dock-link:active, a.sticker-nav:active, a.back-dashboard:active,
+  a.cinna-mail:active, a.action:active, a.dock-add:active, a.underlined:active,
+  .desktop-nav a:active, footer a:active {
+    scale: .955;
+    filter: brightness(.97);
+  }
+
+  /* Transaction entry feels like a new page, not a sudden pop. */
+  #entry-dialog[open] {
+    animation: lily-form-enter 280ms cubic-bezier(.2,.75,.2,1) both;
+  }
+  #entry-dialog[open] .dialog-puppy {
+    animation: lily-form-puppy 430ms 90ms cubic-bezier(.2,.9,.25,1.25) both;
+  }
+  @keyframes lily-form-enter {
+    from { opacity: 0; transform: translateY(14px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes lily-form-puppy {
+    0% { opacity: .45; transform: rotate(-15deg) translateY(7px) scale(.88); }
+    70% { opacity: 1; transform: rotate(-3deg) translateY(-2px) scale(1.06); }
+    100% { opacity: 1; transform: rotate(-7deg) translateY(0) scale(1); }
+  }
+  /* Cinna's sticker breathes gently while stationary. */
+  @keyframes lily-cinna-breathe {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-4px) rotate(2deg); }
+  }
+  @keyframes lily-cinna-tap {
+    0%   { transform: rotate(0deg) translateY(0); }
+    45%  { transform: rotate(-8deg) translateY(-6px); }
+    100% { transform: rotate(0deg) translateY(0); }
+  }
+}
+
+/* The whole tile stays centered in grid column #3, but peeks above
+   the dock. Reset the old flat positioning only on Lily/mobile. */
+@media (max-width: 735px) {
+  body[data-profile="lily"] .mobile-dock,
+  body[data-profile="lily"].sticker-page .mobile-dock {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    overflow: visible;
+    isolation: isolate;
+  }
+  body[data-profile="lily"] .mobile-dock .dock-add,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add {
+    position: relative !important;
+    top: auto; right: auto; bottom: auto; left: auto;
+    align-self: center;
+    width: 100%;
+    height: 68px;
+    min-height: 68px;
+    margin: 0;
+    padding: 43px 2px 6px;
+    gap: 0;
+    justify-content: flex-end;
+    border-radius: 18px;
+    overflow: visible;
+    z-index: 1;
+    transform: translateY(-12px) !important;
+    box-shadow: 0 4px 0 #a7d4ed, 0 7px 15px rgba(32,105,147,.14);
+  }
+  body[data-profile="lily"] .mobile-dock .dock-add:active,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add:active {
+    /* Press with 'scale', not transform; keep the raised position. */
+    transform: translateY(-12px) !important;
+    background: #c8eaff;
+    box-shadow: 0 2px 0 #a7d4ed;
+  }
+  body[data-profile="lily"] .mobile-dock .dock-add .cinna-add-art,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add .cinna-add-art {
+    position: absolute;
+    top: -22px; left: 50%;
+    transform: translateX(-50%);
+    width: 76px; height: 65px;
+    flex: none;
+    pointer-events: none;
+    filter: drop-shadow(0 3px 2px rgba(39,107,151,.12));
+  }
+  body[data-profile="lily"] .mobile-dock .dock-add .cinna-add-art img,
+  body[data-profile="lily"].sticker-page .mobile-dock .dock-add .cinna-add-art img {
+    display: block !important;
+    width: 76px; height: 65px;
+    object-fit: contain;
+    transform-origin: 50% 76%;
+  }
+  body[data-profile="lily"] .mobile-dock .dock-add .dock-add-label {
+    position: relative;
+    z-index: 2;
+    line-height: 13px;
+    font-size: 11px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    body[data-profile="lily"] .mobile-dock .dock-add .cinna-add-art img {
+      animation: lily-cinna-breathe 4.3s ease-in-out infinite;
+    }
+    body[data-profile="lily"] .mobile-dock .dock-add:active .cinna-add-art img {
+      animation: lily-cinna-tap 330ms ease-out 1;
+    }
+  }
+}
+
+/* Visible keyboard focus is as important as cute hover feedback. */
+:where(button, a):focus-visible {
+  outline: 3px solid #a94982;
+  outline-offset: 3px;
+}
+:where(button:disabled, button[aria-disabled="true"]) {
+  cursor: not-allowed;
+}
+
+/* The user's reduced-motion choice wins over all our motion rules. */
+@media (prefers-reduced-motion: reduce) {
+  button, a, #entry-dialog[open],
+  #entry-dialog[open] .dialog-puppy,
+  .mobile-dock .dock-add .cinna-add-art img {
+    animation: none !important;
+    transition: none !important;
+    scale: 1 !important;
+  }
+}
