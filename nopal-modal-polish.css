@@ -1,0 +1,284 @@
+/* NOPAL · Midnight Transaction Sheet
+   Standalone visual layer. Load AFTER nopal-midnight.css.
+   Scoped to Nopal; no transaction code or Sheets behavior changes. */
+
+body[data-profile="nopal"] #entry-dialog {
+  --sheet-surface: #172535;
+  --sheet-field: #202f40;
+  --sheet-outline: #465e70;
+  --sheet-mint: #9fe7d9;
+  --sheet-ink: #f2f7f9;
+  --sheet-muted: #b8cad5;
+  box-sizing: border-box;
+  width: min(460px, calc(100vw - 24px));
+  max-width: min(460px, calc(100vw - 24px));
+  max-height: min(90dvh, 780px);
+  overflow: hidden;
+  color: var(--sheet-ink);
+  background: var(--sheet-surface);
+  border: 1px solid #526d7c;
+  border-radius: 24px;
+  box-shadow: 0 28px 70px rgba(3, 11, 20, .57), 0 0 0 1px rgba(192, 239, 231, .04) inset;
+}
+
+body[data-profile="nopal"] #entry-dialog::backdrop {
+  background: rgba(3, 11, 22, .72);
+  backdrop-filter: blur(3px);
+}
+
+body[data-profile="nopal"] #entry-dialog .dialog-body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-height: min(90dvh, 776px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 15px 22px 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #4d6575 transparent;
+}
+
+/* Deliberate, balanced header: the cat belongs to the title, not the X. */
+body[data-profile="nopal"] #entry-dialog .dialog-header {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-height: 66px;
+  margin: 0 0 15px;
+  padding: 5px 0 13px 60px !important;
+  border-bottom: 1px solid rgba(151, 189, 202, .14);
+  background: transparent;
+}
+
+body[data-profile="nopal"] #entry-dialog .nopal-dialog-cat {
+  position: absolute;
+  left: 0;
+  right: auto;
+  top: 50%;
+  transform: translateY(-56%);
+  width: 51px;
+  height: 56px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1px rgba(188, 244, 234, .65))
+          drop-shadow(0 5px 7px rgba(0, 0, 0, .32));
+}
+
+body[data-profile="nopal"] #entry-dialog .dialog-header > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+body[data-profile="nopal"] #entry-dialog .dialog-header .eyebrow {
+  color: #9fc8d2;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.4;
+  letter-spacing: .13em;
+}
+
+body[data-profile="nopal"] #entry-dialog .dialog-header h2 {
+  margin: 3px 0 0;
+  color: #f6fafb;
+  font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: clamp(23px, 6vw, 28px);
+  line-height: 1.09;
+  letter-spacing: -.035em;
+}
+
+body[data-profile="nopal"] #entry-dialog #close-dialog {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin: 0 0 0 auto;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+  border: 1px solid #496474;
+  border-radius: 13px;
+  color: #e0eef2;
+  background: #283b4b;
+  box-shadow: none;
+}
+body[data-profile="nopal"] #entry-dialog #close-dialog:hover { background: #344f5d; }
+body[data-profile="nopal"] #entry-dialog #close-dialog svg { stroke-width: 2.3; }
+
+/* Inputs use one border, the same baseline, and a clear keyboard-focus ring. */
+body[data-profile="nopal"] #entry-dialog .form-field {
+  display: block;
+  flex: 0 0 auto;
+  margin: 0 0 12px;
+}
+body[data-profile="nopal"] #entry-dialog .form-field > span {
+  display: block;
+  margin: 0 0 7px;
+  color: #c2d3dd;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.3;
+  letter-spacing: .015em;
+}
+
+body[data-profile="nopal"] #entry-dialog .form-field > input,
+body[data-profile="nopal"] #entry-dialog .form-field > select,
+body[data-profile="nopal"] #entry-dialog .amount-control {
+  width: 100%;
+  min-height: 48px;
+  height: 48px;
+  border: 1px solid var(--sheet-outline);
+  border-radius: 13px;
+  color: var(--sheet-ink);
+  background: var(--sheet-field);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .025) inset;
+}
+body[data-profile="nopal"] #entry-dialog .form-field > input,
+body[data-profile="nopal"] #entry-dialog .form-field > select {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 16px;
+  padding: 0 13px;
+}
+body[data-profile="nopal"] #entry-dialog .form-field > input::placeholder { color: #aabfcf; }
+body[data-profile="nopal"] #entry-dialog .form-field > input:hover,
+body[data-profile="nopal"] #entry-dialog .form-field > select:hover,
+body[data-profile="nopal"] #entry-dialog .amount-control:hover { border-color: #6e899b; }
+body[data-profile="nopal"] #entry-dialog .form-field > input:focus-visible,
+body[data-profile="nopal"] #entry-dialog .form-field > select:focus-visible,
+body[data-profile="nopal"] #entry-dialog .amount-control:focus-within {
+  outline: 2px solid var(--sheet-mint) !important;
+  outline-offset: 2px;
+  border-color: var(--sheet-mint);
+}
+
+body[data-profile="nopal"] #entry-dialog .amount-control {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 12px;
+  overflow: visible;
+}
+body[data-profile="nopal"] #entry-dialog .amount-control b {
+  padding: 0;
+  color: #b8d7df;
+  font-size: 14px;
+  font-weight: 850;
+}
+body[data-profile="nopal"] #entry-dialog .amount-control input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  min-height: 42px;
+  height: 42px;
+  padding: 0 5px;
+  border: 0 !important;
+  border-radius: 0;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #f6fbfd;
+  background: transparent !important;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Readable backend caveat; not a fake success status. */
+body[data-profile="nopal"] #entry-dialog .form-disclaimer {
+  order: 1;
+  flex: 0 0 auto;
+  margin: 0 0 11px;
+  padding: 8px 12px;
+  border-left: 2px solid #83b7b4;
+  border-radius: 0 9px 9px 0;
+  color: #c4d6dd;
+  background: rgba(128, 184, 185, .07);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+body[data-profile="nopal"] #entry-dialog .dialog-bottom {
+  order: 2;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  flex: 0 0 auto;
+  gap: 9px;
+  margin: 0 -22px;
+  padding: 10px 22px calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(145, 185, 198, .14);
+  background: #172535;
+  box-shadow: 0 -9px 22px rgba(11, 23, 34, .28);
+}
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action {
+  width: 100%;
+  min-width: 0;
+  min-height: 47px;
+  padding: 9px 12px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.15;
+  white-space: normal;
+  box-shadow: none;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action.secondary {
+  color: #dce9ee;
+  background: #263a4b;
+  border: 1px solid #395367;
+}
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action.secondary:hover { background: #32495b; }
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action.primary {
+  color: #132b33;
+  background: #9fe7d9;
+  border: 1px solid #9fe7d9;
+}
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action.primary:hover { background: #b7f1e6; }
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action:active { transform: translateY(1px) scale(.985); }
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action:disabled { opacity: .6; transform: none; }
+
+/* The original dialog stays centered on desktop and becomes a bottom sheet on phones. */
+@media (max-width: 735px) {
+  body[data-profile="nopal"] #entry-dialog {
+    position: fixed;
+    inset: auto 0 0 !important;
+    margin: 0 auto !important;
+    width: min(100%, 560px);
+    max-width: 100%;
+    max-height: calc(100dvh - 8px);
+    border-radius: 25px 25px 0 0;
+    border-bottom: 0;
+  }
+  body[data-profile="nopal"] #entry-dialog .dialog-body {
+    max-height: min(635px, calc(100dvh - 8px));
+    padding: 13px 16px 0;
+  }
+  body[data-profile="nopal"] #entry-dialog .dialog-header {
+    position: sticky;
+    top: -13px;
+    z-index: 4;
+    min-height: 63px;
+    margin-bottom: 12px;
+    padding: 4px 0 11px 55px !important;
+    background: #172535;
+  }
+  body[data-profile="nopal"] #entry-dialog .nopal-dialog-cat {
+    width: 46px;
+    height: 53px;
+  }
+  body[data-profile="nopal"] #entry-dialog .form-field { margin-bottom: 11px; }
+  body[data-profile="nopal"] #entry-dialog .dialog-bottom {
+    margin: 0 -16px;
+    padding: 10px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="nopal"] #entry-dialog,
+  body[data-profile="nopal"] #entry-dialog .dialog-bottom .action { animation: none !important; transition: none !important; }
+}
