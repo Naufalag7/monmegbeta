@@ -43,6 +43,13 @@
 
   // Lily chooses the LARGE artwork in the opening banner, not the small header icon.
   // All choices use the sticker files already in the website; no data logic changes.
+  // Upgrade older installs: remove the legacy overlay button and its dialog.
+  // The large banner artwork itself is the only control in this version.
+  const oldStickerButton = banner?.querySelector('#lily-banner-picker-trigger, .lily-banner-picker-trigger');
+  if (oldStickerButton) {
+    oldStickerButton.remove();
+    $('#lily-banner-picker')?.remove();
+  }
   const bannerArt = $('.lily-banner .lily-banner-art');
   const stickers = [
     ['cinna-cloud-friends', 'Cloud friends'], ['hello', 'Hello'],

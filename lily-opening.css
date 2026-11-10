@@ -564,3 +564,15 @@ body[data-profile="lily"] #entry-dialog .amount-control input[type="number"]::-w
     width: 39% !important;
   }
 }
+
+
+/* Lily banner — fine-tune sticker position on mobile */
+@media (max-width: 735px) {
+  body[data-profile="lily"] .lily-banner .lily-banner-art,
+  body[data-profile="lily"] .lily-banner .lily-banner-art.lily-banner-custom-art {
+    top: 10% !important;
+    right: 0% !important;
+    width: 50% !important;
+  }
+}
+
