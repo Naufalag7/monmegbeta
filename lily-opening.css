@@ -367,3 +367,200 @@ body[data-profile="lily"] .sync-detail #refresh-btn {
 @media (max-width: 735px) {
   body[data-profile="lily"] .lily-mascot-trigger { width: 44px; height: 44px; }
 }
+
+
+/* Banner artwork can be tapped directly; no extra change button. */
+body[data-profile="lily"] .lily-banner .lily-banner-art-clickable {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  /* A moving tap target is harder to use and can fail stability checks. */
+  animation: none !important;
+  transition: filter 180ms ease !important;
+}
+body[data-profile="lily"] .lily-banner .lily-banner-art-clickable:hover {
+  filter: drop-shadow(0 6px 7px rgba(59, 125, 176, .24));
+}
+body[data-profile="lily"] .lily-banner .lily-banner-art-clickable:focus-visible {
+  outline: 3px solid #a04781 !important;
+  outline-offset: 3px !important;
+  border-radius: 18px;
+}
+body[data-profile="lily"] .lily-banner .lily-banner-custom-art {
+  object-fit: contain;
+  object-position: center bottom;
+}
+/* Native modal: keyboard focus, Escape close, and content scrolling handled by browser. */
+.lily-banner-picker {
+  box-sizing: border-box;
+  position: fixed; inset: 0;
+  width: min(400px, calc(100vw - 26px));
+  max-width: calc(100vw - 26px); max-height: min(610px, calc(100dvh - 32px));
+  margin: auto; padding: 17px;
+  border: 2px solid #c4e3f1; border-radius: 24px;
+  background: #fffdfa; color: #315e7e;
+  box-shadow: 0 20px 56px rgba(23, 68, 103, .30);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.lily-banner-picker:not([open]) { display: none !important; }
+.lily-banner-picker::backdrop { background: rgba(17, 50, 82, .53); backdrop-filter: blur(2px); }
+.lily-banner-picker-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.lily-banner-picker-head h2 { margin: 2px 0 5px; font: 650 22px/1.12 'Fredoka', sans-serif; color: #2f7195; }
+.lily-banner-picker-head p { margin: 0 0 12px; font: 700 11px/1.45 'Nunito', sans-serif; color: #557a91; }
+.lily-banner-picker-close {
+  flex: 0 0 44px; width: 44px; height: 44px; border-radius: 13px;
+  border: 1px solid #cce4f1; background: #edf8ff; color: #396f90;
+  font: 600 28px/1 'Nunito', sans-serif; cursor: pointer;
+}
+.lily-banner-picker-options { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; }
+.lily-banner-picker-option {
+  display: grid; justify-items: center; align-content: center; gap: 4px;
+  min-width: 0; min-height: 78px; padding: 6px 3px;
+  background: #f2f9ff; border: 1px solid #d7eaf4; border-radius: 13px;
+  color: #416f90; font: 850 10px/1.2 'Nunito', sans-serif;
+  cursor: pointer; transition: transform .15s ease, border-color .15s ease;
+}
+.lily-banner-picker-option img { width: 54px; height: 47px; max-width: 100%; object-fit: contain; }
+.lily-banner-picker-option span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lily-banner-picker-option:hover { border-color: #aa73a1; transform: translateY(-2px); }
+.lily-banner-picker-option[aria-pressed="true"],
+.lily-banner-picker-shuffle[aria-pressed="true"] {
+  border-color: #af6795; background: #fcecf5; box-shadow: inset 0 0 0 1px #af6795;
+}
+.lily-banner-picker-footer { display: flex; gap: 8px; margin-top: 12px; }
+.lily-banner-picker-footer button {
+  flex: 1; min-width: 0; min-height: 44px;
+  padding: 7px 8px; border: 1px solid #c4dfef; border-radius: 12px;
+  background: #e9f6ff; color: #326d90;
+  font: 900 11px/1.25 'Nunito', sans-serif; cursor: pointer;
+}
+@media (max-width: 360px) {
+  body[data-profile="lily"] .lily-banner-picker-label { display: none; }
+  .lily-banner-picker { padding: 13px; border-radius: 18px; }
+  .lily-banner-picker-options { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="lily"] .lily-banner-picker-trigger,
+  .lily-banner-picker-option { transition: none !important; }
+}
+
+
+/* One focus ring around the entire amount field, not a second nested input box. */
+body[data-profile="lily"] #entry-dialog .amount-control {
+  position: relative;
+  border: 1px solid #b9dcf0;
+  border-radius: 14px;
+  background: #f1faff;
+}
+body[data-profile="lily"] #entry-dialog .amount-control :is(input, input:focus, input:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  min-width: 0;
+}
+body[data-profile="lily"] #entry-dialog .amount-control:focus-within {
+  outline: 3px solid #3d87b5;
+  outline-offset: 2px;
+  border-color: #77bfe4;
+}
+
+/* Small location-switchable weather capsule in the masthead. */
+body[data-profile="lily"] .lily-weather {
+  display: flex; align-items: center; justify-content: space-between;
+  flex: 0 1 215px; min-width: 0; gap: 7px;
+  padding: 6px 8px;
+  border: 1px solid #b7dceb; border-radius: 14px;
+  background: rgba(244, 251, 255, .95);
+  color: #295d80;
+  font: 700 11px/1.2 'Nunito', system-ui, sans-serif;
+}
+body[data-profile="nopal"] .lily-weather { display: none !important; }
+body[data-profile="lily"] .lily-weather-info { display: flex; align-items: center; gap: 5px; min-width: 0; }
+body[data-profile="lily"] .lily-weather-icon { font-size: 20px; line-height: 1; width: 26px; flex: 0 0 26px; text-align: center; }
+body[data-profile="lily"] .lily-weather-reading { display: grid; gap: 1px; min-width: 0; }
+body[data-profile="lily"] .lily-weather-temp { font: 800 15px/1 'Fredoka',system-ui,sans-serif; white-space: nowrap; }
+body[data-profile="lily"] .lily-weather-condition { color: #567b92; font-size: 9px; line-height: 1.15; white-space: nowrap; }
+body[data-profile="lily"] .lily-weather-actions { display: flex; align-items: center; gap: 4px; min-width: 0; flex-wrap: wrap; justify-content: flex-end; }
+body[data-profile="lily"] .lily-weather select {
+  min-width: 0; max-width: 110px; min-height: 36px; padding: 0 20px 0 6px;
+  border: 1px solid #d2e9f5; border-radius: 10px;
+  color: #306381; background: white; font: 800 10px 'Nunito',sans-serif;
+}
+body[data-profile="lily"] .lily-weather-refresh {
+  border: 1px solid #c9e1ef; border-radius: 10px; background: white;
+  color: #376f92; min-width: 34px; min-height: 36px;
+  font: 900 20px/1 'Nunito',sans-serif;
+}
+body[data-profile="lily"] .lily-weather-refresh:disabled { opacity: .55; cursor: wait; }
+body[data-profile="lily"] .lily-weather-source {
+  color: #567b92; font-size: 9px; text-decoration: underline;
+  text-underline-offset: 2px;
+}
+body[data-profile="lily"] .lily-weather :is(select,button,a):focus-visible {
+  outline: 3px solid #ab5387 !important;
+  outline-offset: 2px;
+}
+@media (max-width: 1040px) {
+  /* Two easy-to-scan header rows keep the weather from crushing the logo. */
+  body[data-profile="lily"] .topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: "wordmark actions" "weather weather";
+    align-items: center;
+    gap: 7px 5px;
+    height: auto !important; min-height: 0 !important;
+    padding: 9px 8px 10px !important;
+  }
+  body[data-profile="lily"] .topbar .brand { grid-area: wordmark; min-width: 0; }
+  body[data-profile="lily"] .topbar .topbar-actions { grid-area: actions; min-width: 0; margin-left: 0; }
+  body[data-profile="lily"] .topbar .desktop-nav { display: none !important; }
+  body[data-profile="lily"] .topbar .lily-weather { grid-area: weather; width: 100%; min-width: 0; }
+}
+@media (max-width: 735px) {
+  body[data-profile="lily"] .topbar .lily-weather {
+    padding: 5px 8px;
+    min-height: 46px;
+  }
+  body[data-profile="lily"] .lily-weather-actions { gap: 4px; }
+  body[data-profile="lily"] .lily-weather select { max-width: 135px; min-height: 34px; }
+  body[data-profile="lily"] .lily-weather-refresh { min-height: 34px; min-width: 34px; }
+  body[data-profile="lily"] .lily-weather-source { font-size: 9px; }
+}
+@media (max-width: 355px) {
+  body[data-profile="lily"] .lily-weather select { max-width: 115px; }
+  body[data-profile="lily"] .lily-weather-icon { flex-basis: 22px; width: 22px; font-size: 18px; }
+  body[data-profile="lily"] .lily-weather { gap: 4px; padding-inline: 6px; }
+  body[data-profile="lily"] .lily-weather-info { gap: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lily-banner-picker-option { transition: none !important; }
+}
+
+/* Numeric keypad without browser spinner arrows inside the money field. */
+body[data-profile="lily"] #entry-dialog .amount-control input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+body[data-profile="lily"] #entry-dialog .amount-control input[type="number"]::-webkit-inner-spin-button,
+body[data-profile="lily"] #entry-dialog .amount-control input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Different sticker silhouettes shouldn't obscure the welcome text. */
+@media (max-width: 735px) {
+  body[data-profile="lily"] .lily-banner .lily-banner-art.lily-banner-custom-art {
+    width: 40% !important;
+    max-height: 154px !important;
+    right: 1% !important;
+    bottom: 3px !important;
+  }
+  body[data-profile="lily"] .lily-banner:has(.lily-banner-custom-art) .lily-banner-copy {
+    max-width: 61%;
+  }
+}
+@media (max-width: 355px) {
+  body[data-profile="lily"] .lily-banner .lily-banner-art.lily-banner-custom-art {
+    max-height: 131px !important;
+    width: 39% !important;
+  }
+}
