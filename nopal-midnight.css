@@ -1,0 +1,528 @@
+/* Nopal's Midnight Journal — intentionally separate from Lily's sky.
+   Load AFTER finishing.css and compact-sheet.css, if present.
+   Glass is reserved for navigation and overlays; content remains crisp. */
+
+body[data-profile="nopal"] {
+  color-scheme: dark;
+  --crust: #0d1420;
+  --mantle: #172230;
+  --base: #16212f;
+  --surface0: #253346;
+  --surface1: #34475c;
+  --surface2: #597086;
+  --edge: rgba(173, 199, 216, .18);
+  --text: #f3f7fa;
+  --subtext: #c4d2dd;
+  --overlay: #aabecd;
+  --green: #9de3d6;
+  --lavender: #b0cfee;
+  --mauve: #b4c4db;
+  --teal: #9de3d6;
+  --red: #ff9ea7;
+  background:
+    radial-gradient(ellipse 70% 28% at 92% -6%, rgba(67, 107, 142, .19), transparent 80%),
+    linear-gradient(180deg, #0c1420, #111b29 48%, #0c1420);
+  color: var(--text);
+}
+body[data-profile="nopal"] :is(button, input, select, textarea) { font-family: 'Nunito', system-ui, sans-serif; }
+body[data-profile="nopal"] :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid #a7e9e0 !important;
+  outline-offset: 3px !important;
+}
+body[data-profile="nopal"] .shell { width: min(1120px, calc(100% - 32px)); }
+body[data-profile="nopal"] .topbar {
+  height: 78px; min-height: 78px; gap: 12px; padding: 0 10px;
+  background: transparent; border-bottom: 1px solid var(--edge); border-radius: 0;
+}
+body[data-profile="nopal"] .brand { gap: 9px; min-width: 0; }
+body[data-profile="nopal"] .brand-wordmark {
+  font: 600 clamp(24px, 3vw, 31px)/1 'Fredoka', sans-serif;
+  letter-spacing: -.05em; color: #f2f6fb;
+}
+body[data-profile="nopal"] .brand-dot { color: #95e0d7; }
+body[data-profile="nopal"] .brand-description {
+  display: block; margin-left: 3px; padding-left: 12px;
+  border-left: 1px solid #3a5264; font-size: 10px;
+  font-weight: 800; line-height: 1.35; color: #b5cbd9;
+}
+/* Photographic black cats need a lighter halo to remain visible on dark UI. */
+.nopal-cat { display: none; object-fit: contain; pointer-events: none; }
+body[data-profile="nopal"] .nopal-cat { display: block; }
+body[data-profile="nopal"] .nopal-cat-logo {
+  width: 48px; height: 48px; padding: 4px; flex: 0 0 48px;
+  border-radius: 50%; background: radial-gradient(circle, #496173, #23394d 72%, transparent 73%);
+}
+body[data-profile="nopal"] .nopal-profile-icon { display: inline-block; width: 24px; height: 26px; margin-right: 4px; vertical-align: middle; }
+body[data-profile="lily"] .nopal-profile-icon { display: none !important; }
+body[data-profile="nopal"] .desktop-nav a { color: var(--subtext); }
+body[data-profile="nopal"] .desktop-nav a:hover { color: #fff; }
+body[data-profile="nopal"] .topbar-actions .primary,
+body[data-profile="nopal"] #submit-entry,
+body[data-profile="nopal"] .action.primary {
+  background: #9de3d6; border-color: #9de3d6; color: #112835;
+  box-shadow: none; font-weight: 900;
+}
+body[data-profile="nopal"] .action.primary:hover { background: #b7f5e9; }
+body[data-profile="nopal"] .nopal-cat-desktop { width: 38px; height: 38px; margin: -3px 0 -3px -6px; }
+body[data-profile="nopal"] .desktop-add { gap: 8px; min-height: 46px; border-radius: 14px; }
+body[data-profile="nopal"] .desktop-add > svg { display: none; }
+
+body[data-profile="nopal"] .sync-detail {
+  margin: 10px 0 0; padding: 11px 14px; min-height: 52px;
+  border: 1px solid #32485a; border-radius: 14px;
+  background: rgba(24, 35, 50, .92); color: var(--subtext);
+  box-shadow: none;
+}
+body[data-profile="nopal"] .sync-detail.is-problem { border-color: #bd777f; }
+body[data-profile="nopal"] .sync-detail.is-pending { border-color: #bd9864; }
+body[data-profile="nopal"] .sync-status { color: #e1e9ee; }
+body[data-profile="nopal"] .sync-detail #refresh-btn { color: var(--text); }
+body[data-profile="nopal"] :is(.icon-btn, .months button, .record-copy) {
+  border-color: #3b5162; color: var(--text);
+}
+body[data-profile="nopal"] .intro { padding: 25px 3px 20px; gap: 14px; align-items: center; }
+body[data-profile="nopal"] .intro h1 {
+  font: 600 clamp(33px, 4.8vw, 48px)/1.05 'Fredoka', sans-serif;
+  letter-spacing: -.05em; margin: 6px 0;
+}
+body[data-profile="nopal"] .intro h1 em { color: #a8d4e8; font-style: normal; }
+body[data-profile="nopal"] .intro-desc { color: var(--subtext); }
+body[data-profile="nopal"] .eyebrow { color: #a8bfd1; }
+body[data-profile="nopal"] .profile-switch {
+  background: #182432; border: 1px solid #415568; border-radius: 999px;
+  padding: 4px; gap: 4px;
+}
+body[data-profile="nopal"] .profile { border-radius: 999px; min-height: 41px; }
+body[data-profile="nopal"] .profile.active {
+  background: #a2dfd7; color: #122c35;
+}
+
+body[data-profile="nopal"] :is(.overview, .activity, .budget-section, .category-section) {
+  background: rgba(23, 33, 47, .96);
+  border: 1px solid #344658;
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .10);
+}
+body[data-profile="nopal"] .overview { padding: 22px 24px; }
+body[data-profile="nopal"] .overview .label { color: var(--subtext); }
+body[data-profile="nopal"] .months {
+  background: #202e3d; border: 1px solid #3a4d5e; border-radius: 999px; padding: 2px;
+}
+body[data-profile="nopal"] .months button { border-radius: 50%; color: #e6eff6; }
+body[data-profile="nopal"] .headline-grid { gap: 12px; margin-top: 18px; }
+body[data-profile="nopal"] .metric-card {
+  background: #1c2a3a; border: 1px solid #354a5c; border-radius: 15px;
+  padding: 15px; min-height: 105px; gap: 6px;
+}
+body[data-profile="nopal"] .metric-label { color: #c8d8e4; font-size: 12px; font-weight: 800; }
+body[data-profile="nopal"] .metric-card .metric-amount {
+  font: 600 clamp(20px, 2.2vw, 28px)/1.17 'Fredoka', sans-serif;
+  font-variant-numeric: tabular-nums; letter-spacing: -.03em; color: #f2f6f9;
+}
+body[data-profile="nopal"] .metric-income .metric-amount { color: #a1e3d6; }
+body[data-profile="nopal"] .metric-cash .metric-amount.negative { color: var(--red); }
+body[data-profile="nopal"] .metric-sub { color: #aebfcb; }
+body[data-profile="nopal"] .overview-bottom { border-color: var(--edge); color: #cad9e4; }
+body[data-profile="nopal"] .chart-head { border-color: var(--edge); }
+body[data-profile="nopal"] .chart-wrap { background: repeating-linear-gradient(to top, transparent 0 30px, rgba(167,194,214,.10) 31px 32px); }
+body[data-profile="nopal"] .chart-col span { background: #526f84; }
+body[data-profile="nopal"] .chart-col span.peak { background: #a3e1d9; }
+body[data-profile="nopal"] .chart-col span.active { background: #c3e9f2; }
+body[data-profile="nopal"] .chart-empty { border: 1px dashed #496073; border-radius: 12px; background: rgba(28,41,55,.92); }
+body[data-profile="nopal"] .category-track { background: #334656; }
+body[data-profile="nopal"] .category-track span,
+body[data-profile="nopal"] .progress span { background: #9de3d6; }
+body[data-profile="nopal"] .budget-line-track > span { background: #9cb8d0; }
+body[data-profile="nopal"] .content-grid { gap: 20px; padding-top: 20px; }
+body[data-profile="nopal"] .right-column { display: grid; gap: 20px; align-content: start; }
+/* Prevent the transaction card stretching to match a taller budget column. */
+body[data-profile="nopal"] .content-grid { align-items: start; }
+body[data-profile="nopal"] .activity { min-height: 0; }
+/* Hide Cinna images dynamically generated for Lily in Nopal financial lists. */
+body[data-profile="nopal"] :is(.category-title img, .category-empty img, .chart-empty img) { display: none !important; }
+body[data-profile="nopal"] :is(.activity, .budget-section, .category-section) { padding: 22px; margin: 0; }
+body[data-profile="nopal"] .category-section { border-top: 1px solid #344658; }
+body[data-profile="nopal"] .section-top h2 { font-family: 'Fredoka', sans-serif; font-weight: 600; }
+body[data-profile="nopal"] .filters :is(input,select),
+body[data-profile="nopal"] #entry-dialog :is(input,select) {
+  color: #f5f8fb; background: #202f40; border: 1px solid #50677c;
+  border-radius: 12px;
+}
+body[data-profile="nopal"] .filters input::placeholder,
+body[data-profile="nopal"] #entry-dialog input::placeholder { color: #bacbd7; }
+body[data-profile="nopal"] .record-icon { background: #26394b; color: #b5d8eb; }
+body[data-profile="nopal"] .record-copy { background: #213246; }
+body[data-profile="nopal"] .note-panel { margin-top: 0; border-color: var(--edge); }
+body[data-profile="nopal"] .note-panel p,
+body[data-profile="nopal"] footer { color: #b3c6d3; }
+body[data-profile="nopal"] footer { border-color: var(--edge); }
+
+/* Native dialog keeps original submit logic; no duplicated form. */
+body[data-profile="nopal"] #entry-dialog {
+  background: #172435; border: 1px solid #51677a; border-radius: 20px;
+  color: #f3f7fa; box-shadow: 0 22px 70px rgba(0,0,0,.55);
+}
+body[data-profile="nopal"] #entry-dialog .dialog-header h2 { font-family: 'Fredoka', sans-serif; font-weight: 600; }
+body[data-profile="nopal"] #entry-dialog #close-dialog { color: #dfeaf2; background: #273b4d; border-color: #557084; }
+body[data-profile="nopal"] #entry-dialog .action.secondary { background: #243748; color: #e5eef3; }
+body[data-profile="nopal"] #entry-dialog .dialog-note { color: #b8cad6; }
+
+/* Mobile navigation: same geometry as Lily, with a small raised cat CTA. */
+@media (max-width: 735px) {
+  body[data-profile="nopal"] .shell { width: calc(100% - 24px); }
+  body[data-profile="nopal"] .topbar { height: 66px; min-height: 66px; padding: 0 4px; }
+  body[data-profile="nopal"] .brand { gap: 5px; }
+  body[data-profile="nopal"] .brand-wordmark { font-size: 25px; }
+  body[data-profile="nopal"] .nopal-cat-logo { width: 37px; height: 37px; flex-basis: 37px; padding: 3px; }
+  body[data-profile="nopal"] .brand-description { margin-left: 1px; padding-left: 8px; font-size: 9px; }
+  body[data-profile="nopal"] .intro { flex-wrap: wrap; align-items: start; padding: 20px 4px 15px; }
+  body[data-profile="nopal"] .intro h1 { font-size: clamp(30px, 8vw, 39px); }
+  body[data-profile="nopal"] .overview { padding: 15px 13px 16px; }
+  body[data-profile="nopal"] .overview-header { flex-wrap: wrap; gap: 9px; }
+  body[data-profile="nopal"] .headline-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+  body[data-profile="nopal"] .metric-card { padding: 14px 12px; min-height: 103px; }
+  body[data-profile="nopal"] .metric-card .metric-amount { font-size: clamp(18px,5.3vw,24px); }
+  body[data-profile="nopal"] .content-grid { gap: 16px; padding-top: 16px; }
+  body[data-profile="nopal"] :is(.activity,.budget-section,.category-section) { padding: 17px 14px; }
+  body[data-profile="nopal"] .right-column { gap: 16px; }
+  body[data-profile="nopal"] .mobile-dock {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    left: max(10px,env(safe-area-inset-left)); right: max(10px,env(safe-area-inset-right));
+    bottom: calc(9px + env(safe-area-inset-bottom));
+    height: 76px; min-height: 76px; padding: 6px; gap: 4px;
+    border: 1px solid #465d71; border-radius: 23px;
+    background: rgba(24, 36, 50, .94);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 8px 34px rgba(0,0,0,.3);
+    overflow: visible;
+  }
+  body[data-profile="nopal"] .mobile-dock .dock-link {
+    min-height: 62px; height: 62px; align-self: stretch; border-radius: 16px;
+    color: #c1d0dd; gap: 3px; justify-content: center;
+  }
+  body[data-profile="nopal"] .mobile-dock .dock-link.active,
+  body[data-profile="nopal"] .mobile-dock .dock-link[aria-current="page"] {
+    background: #2b4154; color: #e8f7f5;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile {
+    position: relative !important;
+    inset: auto !important; display: flex !important;
+    flex-direction: column; justify-content: flex-end; align-items: center;
+    width: 100%; height: 66px; min-height: 66px; margin: 0;
+    padding: 39px 2px 6px; border-radius: 17px;
+    border: 1px solid #7ab9b3; background: #9de3d6; color: #112c32;
+    box-shadow: 0 3px 0 #417975; transform: translateY(-9px) !important;
+    overflow: visible;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile > svg { display: none !important; }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .dock-add-label { color: #153c43; font: 900 11px/14px 'Nunito',sans-serif; }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add {
+    display: grid !important; place-items: center;
+    position: absolute; left: 50%; top: -23px;
+    width: 63px; height: 65px; transform: translateX(-50%);
+    border-radius: 50%; background: radial-gradient(circle,#6c9997, #3c6468 63%,transparent 66%);
+    pointer-events: none;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add img {
+    display: block; width: 61px; height: 63px; object-fit: contain;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile:active { transform: translateY(-7px) scale(.96) !important; }
+  body[data-profile="nopal"] footer { padding-bottom: calc(117px + env(safe-area-inset-bottom)) !important; }
+}
+@media (max-width: 365px) {
+  body[data-profile="nopal"] .brand-description { font-size: 8px; }
+  body[data-profile="nopal"] .nopal-cat-logo { width: 32px; height: 32px; flex-basis: 32px; }
+  body[data-profile="nopal"] .mobile-dock { left: 7px; right: 7px; padding: 5px; }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add { width: 57px; height: 59px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add img {
+    animation: nopal-cat-breathe 3.6s ease-in-out infinite alternate;
+  }
+  @keyframes nopal-cat-breathe { from { translate: 0 0; } to { translate: 0 -3px; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add img { animation: none !important; }
+}
+
+/* Minimal standalone cats — the transparent illustrations are the decoration.
+   No circles, radial backgrounds, or colored plate behind the Catat mascot.
+   Keep the dock/button hit area and the existing click handler intact. */
+body[data-profile="nopal"] .nopal-cat-logo {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  filter: drop-shadow(0 1px 2px rgba(219, 246, 247, .22));
+}
+@media (max-width: 735px) {
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add {
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add img {
+    filter: drop-shadow(0 0 2px rgba(215, 247, 247, .8))
+            drop-shadow(0 4px 4px rgba(0, 0, 0, .3));
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .dock-add-label {
+    color: #c5f4ec;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile:hover .nopal-cat-add img {
+    scale: 1.05;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile:hover .nopal-cat-add img {
+    scale: 1;
+  }
+}
+
+/* --------------------------------------------------------------
+   CAT CONSTELLATION · Nopal, November 2026
+   All nine existing transparent cat cutouts are used. Decorations
+   never replace data, links, form fields, or their tap targets.
+   -------------------------------------------------------------- */
+body[data-profile="nopal"] {
+  --nopal-cat-edge: rgba(188, 229, 224, .54);
+}
+body[data-profile="nopal"] .nopal-cat {
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* Highlights dark fur without a circle, colored plate, or sticker box. */
+  filter: brightness(1.08)
+          drop-shadow(0 0 1px var(--nopal-cat-edge))
+          drop-shadow(0 3px 4px rgba(0, 0, 0, .22));
+}
+body[data-profile="nopal"] .nopal-cat-logo {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+/* One tiny character keeps the greeting personal, without a taller hero. */
+body[data-profile="nopal"] .intro > div:first-child {
+  position: relative;
+  min-width: 0;
+  padding-right: clamp(65px, 8vw, 95px);
+}
+body[data-profile="nopal"] .nopal-intro-cat {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: clamp(65px, 8vw, 82px);
+  height: 82px;
+  opacity: .96;
+}
+
+/* The money is always first: cats remain in the top-right whitespace. */
+body[data-profile="nopal"] .metric-card { position: relative; isolation: isolate; }
+body[data-profile="nopal"] .metric-label { padding-right: 42px; }
+body[data-profile="nopal"] .nopal-metric-cat {
+  position: absolute;
+  z-index: 0;
+  right: 8px;
+  top: 8px;
+  width: 39px;
+  height: 39px;
+  opacity: .87;
+}
+body[data-profile="nopal"] .metric-card > :not(.nopal-metric-cat) {
+  position: relative;
+  z-index: 1;
+}
+body[data-profile="nopal"] .nopal-chart-cat {
+  display: inline-block;
+  width: 33px;
+  height: 33px;
+  margin-left: 3px;
+  vertical-align: middle;
+  opacity: .85;
+}
+body[data-profile="nopal"] .chart-head { flex-wrap: wrap; }
+body[data-profile="nopal"] .chart-head > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Subsequent sections get a modest identifying companion, not a wallpaper. */
+body[data-profile="nopal"] :is(#history-title,#budget-title,#category-title) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+body[data-profile="nopal"] .nopal-heading-cat {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  opacity: .90;
+}
+body[data-profile="nopal"] .note-panel .eyebrow {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+body[data-profile="nopal"] .nopal-note-cat {
+  width: 30px;
+  height: 30px;
+  opacity: .82;
+}
+
+/* A quiet mascot beside the transaction form heading; never above inputs. */
+body[data-profile="nopal"] #entry-dialog .dialog-header { position: relative; }
+body[data-profile="nopal"] .nopal-dialog-cat {
+  position: absolute;
+  top: 3px;
+  right: 53px;
+  width: 39px;
+  height: 39px;
+}
+
+/* Keep mobile information hierarchy; no horizontal overflow at 320px. */
+@media (max-width: 735px) {
+  body[data-profile="nopal"] .intro > div:first-child { padding-right: 62px; }
+  body[data-profile="nopal"] .nopal-intro-cat { width: 58px; height: 67px; }
+  body[data-profile="nopal"] .nopal-metric-cat {
+    top: 7px;
+    right: 6px;
+    width: 34px;
+    height: 34px;
+  }
+  body[data-profile="nopal"] .metric-label { padding-right: 33px; }
+  body[data-profile="nopal"] .nopal-heading-cat { width: 34px; height: 34px; flex-basis: 34px; }
+  body[data-profile="nopal"] .nopal-chart-cat { width: 30px; height: 30px; }
+}
+@media (max-width: 365px) {
+  body[data-profile="nopal"] .intro > div:first-child { padding-right: 50px; }
+  body[data-profile="nopal"] .nopal-intro-cat { width: 47px; height: 57px; }
+  body[data-profile="nopal"] .nopal-metric-cat { width: 30px; height: 30px; }
+  body[data-profile="nopal"] .metric-label { padding-right: 29px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body[data-profile="nopal"] .nopal-intro-cat {
+    animation: nopal-gentle-float 4.4s ease-in-out infinite alternate;
+  }
+  body[data-profile="nopal"] .nopal-metric-cat,
+  body[data-profile="nopal"] .nopal-heading-cat {
+    transition: translate .22s ease, opacity .22s ease;
+  }
+  @media (hover: hover) {
+    body[data-profile="nopal"] .metric-card:hover .nopal-metric-cat,
+    body[data-profile="nopal"] :is(.activity,.budget-section,.category-section):hover .nopal-heading-cat {
+      translate: 0 -3px;
+      opacity: 1;
+    }
+  }
+  @keyframes nopal-gentle-float {
+    from { translate: 0 calc(-50% + 1px); }
+    to { translate: 0 calc(-50% - 4px); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="nopal"] .nopal-intro-cat { animation: none !important; }
+  body[data-profile="nopal"] .nopal-metric-cat,
+  body[data-profile="nopal"] .nopal-heading-cat { transition: none !important; }
+}
+
+
+/* ==========================================
+   NOPAL — TRANSACTION MODAL POLISH
+   ========================================== */
+
+/* Fix double border on nominal input */
+body[data-profile="nopal"] #entry-dialog .amount-control {
+  background: #202f40;
+  border: 1px solid #50677c;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+body[data-profile="nopal"] #entry-dialog .amount-control input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0;
+}
+
+body[data-profile="nopal"] #entry-dialog .amount-control:focus-within {
+  outline: 2px solid #9de3d6;
+  outline-offset: 2px;
+}
+
+/* Compact mobile bottom sheet */
+@media (max-width: 735px) {
+
+  body[data-profile="nopal"] #entry-dialog {
+    position: fixed;
+    inset: auto 0 0 !important;
+    margin: 0 auto !important;
+    width: min(100%, 560px);
+    max-width: 100%;
+    max-height: calc(100dvh - 8px);
+    border-radius: 24px 24px 0 0;
+    border-bottom: 0;
+  }
+
+  body[data-profile="nopal"] #entry-dialog .dialog-body {
+    padding: 14px 16px 0;
+    max-height: calc(100dvh - 8px);
+    overflow-y: auto;
+  }
+
+  /* Header alignment */
+  body[data-profile="nopal"] #entry-dialog .dialog-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 60px;
+    padding: 4px 0 12px 54px !important;
+    margin-bottom: 8px;
+    gap: 8px;
+    background: #172435;
+  }
+
+  /* Place standalone cat beside heading */
+  body[data-profile="nopal"] #entry-dialog .nopal-dialog-cat {
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 50%;
+    transform: translateY(-60%);
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  /* Keep X aligned right */
+  body[data-profile="nopal"] #entry-dialog #close-dialog {
+    margin-left: auto;
+    flex: 0 0 42px;
+  }
+
+  /* Keep footer visually consistent */
+  body[data-profile="nopal"] #entry-dialog .dialog-bottom {
+    background: #172435;
+    gap: 10px;
+  }
+
+  body[data-profile="nopal"] #entry-dialog .form-field {
+    margin-bottom: 12px;
+  }
+
+  body[data-profile="nopal"] #entry-dialog .form-field > span {
+    margin-bottom: 6px;
+  }
+}
+

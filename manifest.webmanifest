@@ -1,0 +1,48 @@
+{
+  "id": "./index.html",
+  "name": "Lily’s Fun World",
+  "short_name": "Lily’s",
+  "description": "A little money journal in the clouds.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#E8F3FF",
+  "theme_color": "#D7EFFF",
+  "lang": "id",
+  "categories": [
+    "finance",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "./icons/cinna-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/cinna-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/cinna-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Catat transaksi",
+      "short_name": "Catat",
+      "url": "./index.html?catat=1"
+    },
+    {
+      "name": "Dunia stiker",
+      "short_name": "Stiker",
+      "url": "./stickers.html"
+    }
+  ]
+}
