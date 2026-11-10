@@ -1,0 +1,120 @@
+/* Lily's Fun World — balanced desktop opening, 2026-11-10.
+   REPLACES lily-desktop.css. No mobile (<900px), Nopal, or JS changes. */
+@media (min-width: 900px) {
+  body[data-profile="lily"] .shell { width: min(1200px, calc(100% - 44px)); }
+  body[data-profile="lily"] .topbar {
+    margin-top: 12px; min-height: 74px !important; height: auto !important;
+    padding: 8px 15px !important; gap: 12px; align-items: center;
+    border-radius: 19px;
+  }
+  body[data-profile="lily"] .topbar .brand { min-width: 0; gap: 8px; }
+  body[data-profile="lily"] .brand-wordmark { font-size: clamp(28px, 2.3vw, 33px); }
+  body[data-profile="lily"] .brand-description { padding-left: 9px; font-size: 10px; }
+  body[data-profile="lily"] .desktop-nav { gap: 3px; justify-content:center; margin:0; }
+  body[data-profile="lily"] .desktop-nav a { padding: 9px 10px; }
+  body[data-profile="lily"] .topbar-actions { gap: 8px; margin:0; justify-content:flex-end; }
+  body[data-profile="lily"] .sticker-nav { min-height: 41px; padding: 7px 12px; }
+  body[data-profile="lily"] .cinna-desktop-add { min-height: 44px; padding: 3px 12px 3px 5px; border-radius: 13px; }
+  body[data-profile="lily"] .cinna-desktop-add .entry-cta-sticker { width: 40px; height: 36px; }
+  /* Weather has one line of relevant data and a genuine location selector. */
+  body[data-profile="lily"] .topbar .lily-weather { flex: 0 0 224px; width: 224px; min-width:0; min-height: 58px; padding: 6px 8px; gap: 6px; }
+  body[data-profile="lily"] .lily-weather-info { flex: 0 0 auto; }
+  body[data-profile="lily"] .lily-weather-icon { flex-basis: 20px; width:20px; font-size:17px; }
+  body[data-profile="lily"] .lily-weather-temp { font-size: 14px; }
+  body[data-profile="lily"] .lily-weather-actions { display:grid; grid-template-columns:minmax(0,1fr) 30px; grid-template-rows:29px 13px; align-content:center; gap:2px 4px; flex:1; min-width:0; }
+  body[data-profile="lily"] .lily-weather select { width:100%; max-width:none; min-height:29px; grid-column:1; grid-row:1; padding:0 16px 0 5px; font-size:9px; }
+  body[data-profile="lily"] .lily-weather-refresh { grid-column:2; grid-row:1; width:30px; min-width:30px; min-height:29px; padding:0; }
+  body[data-profile="lily"] .lily-weather-source { grid-column:1/-1; grid-row:2; justify-self:end; font-size:9px; line-height:1; }
+  body[data-profile="lily"] .sync-detail { min-height: 40px; margin-top: 8px; padding: 3px 10px; border-radius: 14px; }
+  body[data-profile="lily"] .sync-detail #refresh-btn { flex-basis:40px; min-height:40px; width:40px; height:40px; }
+  body[data-profile="lily"] .lily-sync-toggle { min-height:40px; }
+  body[data-profile="lily"] .intro { min-height:0; padding: 14px 4px 12px; align-items:center; gap:16px; }
+  body[data-profile="lily"] .intro h1 { font-size: clamp(32px,3vw,42px); margin:3px 0; line-height:1.12; }
+  body[data-profile="lily"] .intro-desc { font-size:12px; }
+  body[data-profile="lily"] .profile-switch { flex-shrink:0; }
+
+  body[data-profile="lily"] main > .lily-banner {
+    box-sizing:border-box; height: 236px !important; min-height: 236px !important;
+    padding: 18px 23px !important; margin: 0 !important;
+    border-radius: 25px !important; overflow:hidden;
+    display:flex; align-items:center;
+  }
+  body[data-profile="lily"] .lily-banner-copy { max-width:55%; padding:0; }
+  body[data-profile="lily"] .lily-banner-kicker { font-size:9px; letter-spacing:.12em; }
+  body[data-profile="lily"] .lily-banner h2 { font-size:clamp(30px,3.1vw,40px) !important; line-height:1.04; margin:5px 0 8px; }
+  body[data-profile="lily"] .lily-banner-copy p { margin:0; max-width:310px; font-size:11.5px; line-height:1.4; }
+  body[data-profile="lily"] .cinna-mail { min-height:35px; padding:5px 10px; margin-top:9px; }
+  body[data-profile="lily"] .lily-art-credit { display:block; margin-top:8px; font-size:8px; }
+  body[data-profile="lily"] .lily-banner .lily-banner-art,
+  body[data-profile="lily"] .lily-banner .lily-banner-art.lily-banner-custom-art {
+    box-sizing:border-box; top:50% !important; bottom:auto !important; right:1% !important;
+    width:46% !important; max-width:46% !important;
+    height:219px !important; max-height:219px !important;
+    transform:translateY(-50%) !important; object-fit:contain !important;
+    object-position:center !important; animation:none !important;
+  }
+  body[data-profile="lily"] .lily-banner .hero-cheer { opacity:.5; right:29%; top:2px; }
+  body[data-profile="lily"] .lily-banner .banner-corner-art { right:16%; }
+  body[data-profile="lily"] .lily-banner .hero-heart-one { right:4%; }
+  body[data-profile="lily"] .sky-toolbar { min-height:44px !important; height:44px !important; padding:0 5px; margin:0 !important; gap:8px; flex-wrap:nowrap; }
+  body[data-profile="lily"] .sky-toolbar > span { font-size:10.5px; line-height:1.35; }
+  body[data-profile="lily"] .sky-toggle { min-height:39px; }
+  body[data-profile="lily"] #companion-bubble { display:none !important; }
+  body[data-profile="lily"] .companion-button { width:40px !important; height:40px !important; min-height:40px !important; }
+  body[data-profile="lily"] .mood-board { margin:0 !important; padding:13px 15px !important; gap:12px; min-width:0; }
+  body[data-profile="lily"] .mood-copy { min-width:0; }
+  body[data-profile="lily"] .mood-copy strong { font-size:16px; line-height:1.17; }
+  body[data-profile="lily"] .mood-copy #mood-subline { font-size:10px; }
+  body[data-profile="lily"] .mood-choices { gap:6px; min-width:0; }
+  body[data-profile="lily"] .mood-choice { min-width:0; }
+  body[data-profile="lily"] .overview { margin:0 !important; }
+  body[data-profile="lily"] .content-grid { gap:22px; padding-top:22px; }
+  /* Stop decorative assets from extending beyond the content column. */
+  body[data-profile="lily"] :is(.overview,.activity,.budget-section,.dream-garden) > .decor-cinna { right:9px !important; max-width:59px; max-height:59px; }
+}
+
+/* Laptop: a two-column opening scene. Mood stays visible beside the banner. */
+@media (min-width: 1080px) {
+  body[data-profile="lily"] .topbar { display:grid !important; grid-template-columns:minmax(170px,1fr) 224px minmax(210px,.95fr) auto; grid-template-areas:"wordmark weather nav actions"; }
+  body[data-profile="lily"] .topbar .brand { grid-area:wordmark; }
+  body[data-profile="lily"] .topbar .lily-weather { grid-area:weather; }
+  body[data-profile="lily"] .topbar .desktop-nav { display:flex !important; grid-area:nav; }
+  body[data-profile="lily"] .topbar .topbar-actions { grid-area:actions; }
+}
+
+@media (min-width: 1000px) {
+  body[data-profile="lily"] main { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(320px,1fr); column-gap:14px; row-gap:10px; align-items:start; }
+  body[data-profile="lily"] main > .intro { grid-column:1/-1; grid-row:1; }
+  body[data-profile="lily"] main > .lily-banner { grid-column:1; grid-row:2 / span 2; }
+  body[data-profile="lily"] main > .sky-toolbar { grid-column:2; grid-row:2; }
+  body[data-profile="lily"] main > .mood-board { grid-column:2; grid-row:3; height:182px !important; min-height:182px !important; display:flex; flex-direction:column; align-items:stretch; justify-content:space-between; }
+  body[data-profile="lily"] main > .mood-board .mood-choices { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; flex:none; }
+  body[data-profile="lily"] main > .mood-board .mood-choice { width:100%; height:76px !important; min-height:76px !important; padding:4px 1px; gap:3px; font-size:10px; border-radius:14px; }
+  body[data-profile="lily"] main > .mood-board .mood-choice img { width:43px !important; height:43px !important; }
+  body[data-profile="lily"] main > .overview { grid-column:1/-1; grid-row:4; margin-top:3px !important; }
+  body[data-profile="lily"] main > .content-grid, body[data-profile="lily"] main > .dream-garden, body[data-profile="lily"] main > .sticker-preview { grid-column:1/-1; }
+}
+
+/* Narrow laptops keep a second header-nav row; they do not squeeze icons. */
+@media (min-width:900px) and (max-width:1079px) {
+  body[data-profile="lily"] .topbar { display:grid !important; grid-template-columns:minmax(120px,1fr) 224px auto; grid-template-areas:"wordmark weather actions" "nav nav nav"; row-gap:3px; }
+  body[data-profile="lily"] .topbar .brand { grid-area:wordmark; }
+  body[data-profile="lily"] .topbar .lily-weather { grid-area:weather; }
+  body[data-profile="lily"] .topbar .topbar-actions { grid-area:actions; }
+  body[data-profile="lily"] .topbar .desktop-nav { grid-area:nav; display:flex !important; justify-content:center; }
+  body[data-profile="lily"] .topbar .desktop-nav a { padding:3px 13px; }
+  body[data-profile="lily"] .brand-description { display:none; }
+
+}
+@media (min-width:900px) and (max-width:999px) {
+  body[data-profile="lily"] main > .lily-banner { height:222px !important; min-height:222px !important; }
+  body[data-profile="lily"] main > .mood-board { display:flex; align-items:center; justify-content:space-between; min-height:84px !important; }
+  body[data-profile="lily"] main > .mood-board .mood-choice { width:67px; height:62px; }
+  body[data-profile="lily"] main > .mood-board .mood-choice img { width:36px; height:36px; }
+  body[data-profile="lily"] main > .sky-toolbar { margin:6px 0 8px !important; }
+  body[data-profile="lily"] main > .overview { margin-top:8px !important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  body[data-profile="lily"] .lily-banner-art,
+  body[data-profile="lily"] .mood-choice { animation:none !important; transition:none !important; }
+}
