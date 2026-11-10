@@ -1,0 +1,468 @@
+/* NOPAL / STARLIGHT. Intentionally scoped so Lily's style is untouched. */
+body[data-profile="nopal"] {
+  --crust: #070911;
+  --mantle: #101522;
+  --base: #101521;
+  --surface0: #192132;
+  --surface1: #334052;
+  --surface2: #64768c;
+  --edge: rgba(195, 205, 229, .16);
+  --text: #f5f4f1;
+  --subtext: #c7d0de;
+  --overlay: #a7b5c8;
+  --green: #a9e0d0;
+  --lavender: #d0c9e8;
+  --mauve: #ddd0b4;
+  --teal: #a9e0d0;
+  --red: #f3a5b1;
+  color-scheme: dark;
+  background-color: #070911;
+  background-image:
+    radial-gradient(ellipse 60% 380px at 65% -150px, rgba(89, 73, 133, .24), transparent 84%),
+    radial-gradient(ellipse 54% 350px at -20% 460px, rgba(47, 69, 107, .16), transparent 85%),
+    linear-gradient(180deg, #070911 0%, #0b0e17 43%, #080a12 100%);
+  color: var(--text);
+}
+body[data-profile="nopal"] .shell { width: min(1160px, calc(100% - 38px)); }
+body[data-profile="nopal"] .topbar {
+  position: relative;
+  z-index: 4;
+  height: 74px;
+  min-height: 74px;
+  padding: 0 3px;
+  border: 0;
+  border-bottom: 1px solid rgba(213, 222, 240, .17);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+body[data-profile="nopal"] .brand-wordmark {
+  color: #f7f4f0;
+  font: 600 clamp(25px, 2.65vw, 32px)/1 'Fredoka', sans-serif;
+  letter-spacing: -.045em;
+}
+body[data-profile="nopal"] .brand-dot { color: #dccbb0; }
+body[data-profile="nopal"] .brand-description { color: #b4c0d0; border-color: #3b4557; }
+body[data-profile="nopal"] .nopal-cat-logo {
+  width: 47px;
+  height: 47px;
+  flex: 0 0 47px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+body[data-profile="nopal"] .nopal-cat {
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter:
+    brightness(1.14)
+    drop-shadow(0 0 1px rgba(247, 239, 220, .76))
+    drop-shadow(0 4px 6px rgba(0, 0, 0, .30));
+}
+body[data-profile="nopal"] .topbar-actions .primary,
+body[data-profile="nopal"] .action.primary,
+body[data-profile="nopal"] #submit-entry {
+  background: #dcd5c2;
+  color: #171d29;
+  border: 1px solid #dcd5c2;
+  font-weight: 900;
+  box-shadow: none;
+}
+body[data-profile="nopal"] .action.primary:hover { background: #eee8d6; border-color: #eee8d6; }
+body[data-profile="nopal"] .desktop-nav a { color: #bdc9d7; }
+body[data-profile="nopal"] .desktop-nav a:hover,
+body[data-profile="nopal"] .desktop-nav a:focus-visible { color: white; background: rgba(229, 224, 216, .08); }
+body[data-profile="nopal"] :is(button,a,input,select,textarea):focus-visible {
+  outline: 3px solid #e6d8b8 !important;
+  outline-offset: 3px !important;
+}
+
+/* A miniature fibre-optic night sky belongs in the greeting, not on the money. */
+body[data-profile="nopal"] .intro {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  min-height: 176px;
+  margin: 14px 0 18px;
+  padding: 23px 28px;
+  border: 1px solid rgba(204, 206, 236, .22);
+  border-radius: 23px;
+  background:
+    radial-gradient(ellipse at 80% 24%, rgba(106, 95, 148, .26), transparent 56%),
+    linear-gradient(120deg, #111624, #0b101b 78%);
+  box-shadow: 0 16px 38px rgba(0,0,0,.17), inset 0 1px 0 rgba(255,255,255,.035);
+  overflow: hidden;
+  align-items: center;
+}
+body[data-profile="nopal"] .intro::after {
+  content: '';
+  position: absolute;
+  inset: auto -2% 0 auto;
+  width: 43%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(211, 200, 170, .4), transparent);
+  pointer-events: none;
+}
+body[data-profile="nopal"] .intro > :not(.nopal-starfield) {
+  z-index: 1;
+  position: relative;
+}
+body[data-profile="nopal"] .intro > div:first-of-type {
+  min-width: 0;
+  max-width: 760px;
+  padding-right: clamp(76px, 10vw, 132px);
+}
+body[data-profile="nopal"] .intro h1 {
+  font: 600 clamp(30px, 4.35vw, 48px)/1.06 'Fredoka', sans-serif;
+  margin: 5px 0 8px;
+  letter-spacing: -.055em;
+  color: #f8f6f5;
+}
+body[data-profile="nopal"] .intro h1 em { color: #d7cfb9; font-style: normal; }
+body[data-profile="nopal"] .intro .eyebrow {
+  color: #c9c9de;
+  font-size: 10px;
+  letter-spacing: .145em;
+  font-weight: 900;
+}
+body[data-profile="nopal"] .intro-desc {
+  color: #c2cad6;
+  font-size: 12px;
+  line-height: 1.5;
+}
+body[data-profile="nopal"] .nopal-intro-cat {
+  position: absolute;
+  top: 50%;
+  right: clamp(2px, 4vw, 36px);
+  width: clamp(86px, 10vw, 123px);
+  height: clamp(90px, 10vw, 123px);
+  opacity: .95;
+  transform: translateY(-49%);
+  animation: none !important;
+}
+body[data-profile="nopal"] .profile-switch {
+  flex: 0 0 auto;
+  padding: 4px;
+  border: 1px solid rgba(205, 213, 228, .25);
+  border-radius: 14px;
+  background: rgba(14, 19, 32, .72);
+}
+body[data-profile="nopal"] .profile {
+  min-height: 44px;
+  color: #d1d9e4;
+  border-radius: 11px;
+}
+body[data-profile="nopal"] .profile.active {
+  color: #1b2030;
+  background: #ded6c6;
+}
+body[data-profile="nopal"] .nopal-starfield {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+body[data-profile="nopal"] .nopal-star {
+  position: absolute;
+  top: var(--sy);
+  left: var(--sx);
+  width: var(--sr);
+  height: var(--sr);
+  border-radius: 50%;
+  opacity: var(--so);
+  background: #e5eafa;
+  box-shadow: 0 0 6px 1px rgba(228, 230, 255, .45);
+}
+body[data-profile="nopal"] .nopal-star-warm {
+  background: #f5dfad;
+  box-shadow: 0 0 7px 1px rgba(250, 221, 162, .48);
+}
+body[data-profile="nopal"][data-nopal-stars="off"] .nopal-starfield {
+  display: none;
+}
+body[data-profile="nopal"] .nopal-stars-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+  min-height: 37px;
+  padding: 7px 12px;
+  border: 1px solid rgba(222, 209, 176, .37);
+  border-radius: 999px;
+  color: #e0d4b8;
+  background: rgba(42, 42, 59, .66);
+  font: 800 11px/1.2 'Nunito', sans-serif;
+  cursor: pointer;
+}
+body[data-profile="nopal"] .nopal-stars-toggle:hover { background: rgba(69, 64, 82, .82); }
+body[data-profile="nopal"] .nopal-stars-toggle > span { font-size: 17px; }
+body[data-profile="lily"] :is(.nopal-starfield,.nopal-stars-toggle) { display: none !important; }
+@media (prefers-reduced-motion: no-preference) {
+  body[data-profile="nopal"][data-nopal-stars="on"] .nopal-star {
+    animation: nopal-star-breathe var(--st) ease-in-out var(--sd) infinite alternate;
+  }
+  @keyframes nopal-star-breathe {
+    from { opacity: .20; }
+    to { opacity: var(--so); }
+  }
+  body[data-profile="nopal"] .nopal-stars-toggle:active { transform: scale(.97); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-profile="nopal"] .nopal-star { animation: none !important; }
+}
+
+/* Data remains the point of the app: no stars, glass blur or mascots over numbers. */
+body[data-profile="nopal"] .sync-detail {
+  margin: 8px 0 0;
+  min-height: 47px;
+  padding: 10px 14px;
+  background: #131a28;
+  border: 1px solid rgba(184, 199, 217, .22);
+  border-radius: 14px;
+  box-shadow: none;
+}
+body[data-profile="nopal"] .sync-detail.is-problem { border-color: #f3a5b1; }
+body[data-profile="nopal"] .sync-detail.is-pending { border-color: #e3c08e; }
+body[data-profile="nopal"] .sync-detail :is(#sync-label,#sync-last,#sync-pending,#sync-detail-text) { color: #d0d9e5; }
+body[data-profile="nopal"] :is(.overview,.activity,.category-section) {
+  background: #101521;
+  border: 1px solid rgba(196, 203, 225, .19);
+  border-radius: 21px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.13);
+}
+body[data-profile="nopal"] .overview { padding: 22px 23px 18px; }
+body[data-profile="nopal"] .overview-header .label { color: #c9d1e1; }
+body[data-profile="nopal"] .months {
+  background: #1a2131;
+  border: 1px solid #41475a;
+  border-radius: 12px;
+}
+body[data-profile="nopal"] .months button { min-width: 41px; min-height: 41px; }
+body[data-profile="nopal"] .months > span { color: #f2f0ee; }
+body[data-profile="nopal"] .headline-grid { gap: 10px; margin: 15px 0 0; }
+body[data-profile="nopal"] .metric-card {
+  border: 1px solid rgba(177, 192, 213, .22);
+  background: #191f2d;
+  border-radius: 15px;
+  padding: 16px 15px;
+  min-height: 117px;
+  gap: 6px;
+  box-shadow: none;
+  overflow: hidden;
+}
+body[data-profile="nopal"] .metric-label {
+  color: #c2cbd9;
+  font-size: 11px;
+  padding-right: 45px;
+}
+body[data-profile="nopal"] .metric-card .metric-amount {
+  color: #f5f3ef;
+  font: 600 clamp(19px, 2.2vw, 27px)/1.18 'Fredoka', sans-serif;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+body[data-profile="nopal"] .metric-income .metric-amount { color: #9cdecc; }
+body[data-profile="nopal"] .metric-expense .metric-amount { color: #f2d2c5; }
+body[data-profile="nopal"] .metric-savings .metric-amount { color: #d6cfed; }
+body[data-profile="nopal"] .metric-cash .metric-amount.negative,
+body[data-profile="nopal"] .overview-bottom strong.negative { color: #f3a5b1; }
+body[data-profile="nopal"] .metric-sub { color: #aebdcf; }
+body[data-profile="nopal"] .nopal-metric-cat { width: 42px; height: 42px; top: 10px; right: 9px; opacity: .88; }
+body[data-profile="nopal"] .chart-head { margin-top: 23px; padding-top: 17px; border-color: var(--edge); }
+body[data-profile="nopal"] .chart-wrap {
+  background: repeating-linear-gradient(to top, transparent 0, transparent calc(33.333% - 1px), rgba(190, 200, 218, .09) calc(33.333% - 1px), rgba(190, 200, 218, .09) 33.333%);
+  border-bottom: 1px solid rgba(193, 203, 220, .17);
+}
+body[data-profile="nopal"] .chart-col span { background: #586881; }
+body[data-profile="nopal"] .chart-col span.peak { background: #b9c7e1; }
+body[data-profile="nopal"] .chart-col[data-selected="true"] span { background: #d5c4aa; }
+body[data-profile="nopal"] .chart-selected { color: #c1cede; }
+body[data-profile="nopal"] .overview-bottom {
+  color: #ccd3df;
+  border-color: rgba(188, 201, 220, .17);
+}
+body[data-profile="nopal"] .overview-bottom strong { color: #f4f3f1; }
+
+/* Monthly budgeting is Lily's thing. Nopal keeps real categories and history. */
+body[data-profile="nopal"] #budget-section,
+body[data-profile="nopal"] .note-panel { display: none !important; }
+body[data-profile="nopal"] .content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.53fr) minmax(270px, .88fr);
+  align-items: start;
+  gap: 17px;
+  padding-top: 17px;
+}
+body[data-profile="nopal"] .right-column { display: block; min-width: 0; }
+body[data-profile="nopal"] .category-section {
+  margin: 0 !important;
+  padding: 20px 18px;
+  border-top: 1px solid rgba(196, 203, 225, .19);
+}
+body[data-profile="nopal"] .category-section > .quiet { color: #b8c6d5; }
+body[data-profile="nopal"] .category-title,
+body[data-profile="nopal"] .category-item > strong { color: #ebedf1; }
+body[data-profile="nopal"] .category-track { background: #2a3344; }
+body[data-profile="nopal"] .category-track span { background: #b3d4ca; }
+body[data-profile="nopal"] .activity { min-width: 0; padding: 21px 20px; }
+body[data-profile="nopal"] .section-top { align-items: center; }
+body[data-profile="nopal"] .section-top h2 {
+  color: #f2f2f5;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+}
+body[data-profile="nopal"] .filters :is(input,select) {
+  min-height: 43px;
+  border: 1px solid #434f66;
+  border-radius: 11px;
+  background: #1a2332;
+  color: #f5f3f1;
+}
+body[data-profile="nopal"] .record { border-color: rgba(195, 206, 221, .15); }
+body[data-profile="nopal"] .record-icon { background: #1c2839; }
+body[data-profile="nopal"] .record-copy { background: #202b3c; color: #d1dfeb; }
+body[data-profile="nopal"] .record-copy:hover { background: #344255; }
+body[data-profile="nopal"] #history-toggle { color: #e7ebf3; }
+body[data-profile="nopal"] #export-btn { color: #ddd4bb; }
+body[data-profile="nopal"] footer { border-color: rgba(189, 201, 221, .18); }
+
+/* The cats float on their own transparent pixels. No frames or radial discs. */
+body[data-profile="nopal"] .nopal-cat-logo,
+body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add { border: 0; border-radius: 0; background: none !important; }
+body[data-profile="nopal"] .nopal-chart-cat { width: 35px; height: 35px; }
+body[data-profile="nopal"] .nopal-heading-cat { width: 38px; height: 38px; flex-basis: 38px; }
+body[data-profile="nopal"] .nopal-note-cat { display: none; }
+
+/* Separate transaction sheet keeps all existing validation and writes. */
+body[data-profile="nopal"] #entry-dialog {
+  color: #f5f5f4;
+  background: #111723;
+  border: 1px solid #485469;
+  box-shadow: 0 26px 80px rgba(0,0,0,.65);
+}
+body[data-profile="nopal"] #entry-dialog .dialog-header h2 { color: #f5f4f1; }
+body[data-profile="nopal"] #entry-dialog .dialog-header .eyebrow { color: #d8cdb4; }
+body[data-profile="nopal"] #entry-dialog .dialog-bottom .action.primary {
+  background: #ded6c3;
+  color: #151b27;
+}
+body[data-profile="nopal"] #entry-dialog :is(input,select),
+body[data-profile="nopal"] #entry-dialog .amount-control {
+  color: #f2f3f5;
+  background: #202839;
+  border: 1px solid #4c5b70;
+}
+body[data-profile="nopal"] #entry-dialog .amount-control input {
+  border: 0 !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+body[data-profile="nopal"] #entry-dialog .amount-control:focus-within {
+  border-color: #ddceb3;
+  outline: 2px solid #ddceb3;
+  outline-offset: 2px;
+}
+body[data-profile="nopal"] #entry-dialog :is(.dialog-header,.dialog-bottom) { background: #111723; }
+
+@media (min-width: 736px) and (max-width: 1050px) {
+  body[data-profile="nopal"] .content-grid { grid-template-columns: 1fr; }
+  body[data-profile="nopal"] .intro { padding: 19px 20px; }
+}
+@media (max-width: 735px) {
+  body[data-profile="nopal"] .shell { width: calc(100% - 22px); }
+  body[data-profile="nopal"] .topbar { height: 64px; min-height: 64px; padding: 0 2px; }
+  body[data-profile="nopal"] .brand { gap: 6px; }
+  body[data-profile="nopal"] .brand-wordmark { font-size: 25px; }
+  body[data-profile="nopal"] .nopal-cat-logo { width: 36px; height: 36px; flex-basis: 36px; }
+  body[data-profile="nopal"] .brand-description { padding-left: 8px; font-size: 9px; }
+  body[data-profile="nopal"] .intro {
+    min-height: 154px;
+    margin: 10px 0 14px;
+    padding: 17px 16px;
+    border-radius: 19px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  body[data-profile="nopal"] .intro > div:first-of-type { padding-right: 70px; max-width: 100%; }
+  body[data-profile="nopal"] .intro h1 { font-size: clamp(27px, 7.4vw, 37px); }
+  body[data-profile="nopal"] .intro-desc { font-size: 11px; }
+  body[data-profile="nopal"] .nopal-intro-cat {
+    top: 44%; right: -2px; width: 73px; height: 80px;
+  }
+  body[data-profile="nopal"] .profile-switch { min-height: 47px; margin: 0; }
+  body[data-profile="nopal"] .profile { min-height: 39px; }
+  body[data-profile="nopal"] .nopal-stars-toggle { margin-top: 8px; min-height: 34px; padding: 5px 10px; }
+  body[data-profile="nopal"] .overview { padding: 17px 13px; border-radius: 18px; }
+  body[data-profile="nopal"] .headline-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+  body[data-profile="nopal"] .metric-card { min-height: 108px; padding: 13px 11px; }
+  body[data-profile="nopal"] .metric-label { padding-right: 33px; }
+  body[data-profile="nopal"] .nopal-metric-cat { width: 34px; height: 34px; right: 5px; top: 7px; }
+  body[data-profile="nopal"] .metric-card .metric-amount { font-size: clamp(18px,5.4vw,24px); }
+  body[data-profile="nopal"] .content-grid { grid-template-columns: minmax(0,1fr); gap: 14px; padding-top: 14px; }
+  body[data-profile="nopal"] .activity { padding: 17px 14px; }
+  body[data-profile="nopal"] .category-section { padding: 17px 14px; }
+  body[data-profile="nopal"] .right-column { display: block; }
+  body[data-profile="nopal"] .mobile-dock {
+    border: 1px solid #4a536b;
+    background: rgba(14, 19, 31, .95);
+    box-shadow: 0 12px 35px rgba(0,0,0,.48);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  body[data-profile="nopal"] .mobile-dock .dock-link.active,
+  body[data-profile="nopal"] .mobile-dock .dock-link[aria-current="page"] {
+    background: rgba(215, 206, 187, .13);
+    color: #f3eadb;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .nopal-cat-add {
+    background: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+  body[data-profile="nopal"] .mobile-dock #new-entry-mobile .dock-add-label { color: #e8dcc0; }
+  body[data-profile="nopal"] footer { padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 360px) {
+  body[data-profile="nopal"] .brand-description { display: none; }
+  body[data-profile="nopal"] .intro { padding-inline: 12px; }
+  body[data-profile="nopal"] .intro > div:first-of-type { padding-right: 58px; }
+  body[data-profile="nopal"] .nopal-intro-cat { width: 60px; height: 69px; }
+  body[data-profile="nopal"] .nopal-stars-toggle { font-size: 10px; }
+}
+
+/* On wider screens, the cat inhabits the middle of the night sky,
+   between the greeting and profile switch, rather than sitting on text. */
+@media (min-width: 736px) {
+  body[data-profile="nopal"] .intro > div:first-of-type { position: static; }
+  body[data-profile="nopal"] .nopal-intro-cat {
+    position: absolute;
+    top: 52%;
+    right: 23%;
+    width: clamp(98px, 10vw, 124px);
+    height: clamp(100px, 10vw, 124px);
+    transform: translateY(-50%);
+  }
+}
+
+@media (min-width: 736px) and (max-width: 900px) {
+  body[data-profile="nopal"] .nopal-intro-cat {
+    right: 32%;
+    width: 99px;
+    height: 100px;
+  }
+}
+@media (max-width: 735px) {
+  /* Less animated light on phones; the view stays calm and inexpensive to paint. */
+  body[data-profile="nopal"] .nopal-star:nth-child(n + 32) { display: none; }
+}
