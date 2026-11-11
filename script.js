@@ -650,10 +650,19 @@ function boot() {
   $('#entry-dialog').addEventListener('click',e=>{if(e.target===$('#entry-dialog'))$('#entry-dialog').close();});
   $('#entry-form').addEventListener('submit',submitEntry);
   render();refreshData();
-  // The sticker world sends people back to the real transaction form, not a fake one.
-  if(new URLSearchParams(location.search).get('catat')==='1') {
+  // App shortcuts use the existing transaction dialog and Sheets submit handler.
+  const shortcutParams = new URLSearchParams(location.search);
+  if(shortcutParams.get('catat')==='1') {
     history.replaceState(null,'',location.pathname+location.hash);
     openDialog();
+    // Only the Dokter Gigi shortcut fills a category; regular Catat stays blank.
+    if(shortcutParams.get('note')==='Dokter Gigi') {
+      $('#entry-type').value='Pengeluaran';
+      $('#entry-note').value='Dokter Gigi';
+      $('#entry-note').dispatchEvent(new Event('input',{bubbles:true}));
+      updateFormCinna();
+      $('#entry-amount').focus();
+    }
   }
 }
 boot();

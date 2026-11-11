@@ -40,6 +40,11 @@
       "url": "./index.html?catat=1"
     },
     {
+      "name": "Dokter Gigi",
+      "short_name": "Dokter Gigi",
+      "url": "./index.html?catat=1&note=Dokter%20Gigi"
+    },
+    {
       "name": "Dunia stiker",
       "short_name": "Stiker",
       "url": "./stickers.html"
